@@ -5,9 +5,11 @@ namespace ServeriCore.Sherbimet.Abstrakt
     /// <summary>
     /// Paraqet kerkese per kanalin e transferit. Nuk duhet te mbaje gjendje.
     /// </summary>
-    public interface IFileTransferKerkese
+    public interface IFileKomunikues
     {
-        byte[] Kerkesa { get; }
+        int TiketaId { get; }
+
+        Task<byte[]> MerrTeDhenat();
 
         Task KthePergjigjenAsync(byte[] pergjigja);
     }

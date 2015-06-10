@@ -188,7 +188,7 @@
         		<TextBlock TextWrapping="Wrap" Text="PASTRO" VerticalAlignment="Center" Margin="6,0"/>
         	</StackPanel>
         </Button>
-        <StackPanel Grid.Column="2" Margin="16,48,16,59" Orientation="Vertical" Grid.Row="3">
+        <StackPanel Grid.Column="2" Margin="8,52,16,59" Orientation="Vertical" Grid.Row="3">
         	<Grid VerticalAlignment="Top" Height="30">
         		<Grid.ColumnDefinitions>
         			<ColumnDefinition Width="40"/>
