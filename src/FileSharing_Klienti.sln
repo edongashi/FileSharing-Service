@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KlientiCore", "Klienti\KlientiCore\KlientiCore.csproj", "{BF1FB597-3EAB-4004-A2FE-10800EFB05A9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Klienti", "Klienti\FileSharing.Klienti\FileSharing.Klienti.csproj", "{BF1FB597-3EAB-4004-A2FE-10800EFB05A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KlientiUI", "Klienti\KlientiUI\KlientiUI.csproj", "{385021EA-C101-44A6-AD38-DB130FDE357A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Klienti.UI", "Klienti\FileSharing.Klienti.UI\FileSharing.Klienti.UI.csproj", "{385021EA-C101-44A6-AD38-DB130FDE357A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Core", "Core\FileSharing.Core.csproj", "{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{385021EA-C101-44A6-AD38-DB130FDE357A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{385021EA-C101-44A6-AD38-DB130FDE357A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{385021EA-C101-44A6-AD38-DB130FDE357A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

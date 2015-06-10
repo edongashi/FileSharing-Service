@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServeriCore", "Serveri\ServeriCore\ServeriCore.csproj", "{972D9B73-8D92-4C2E-93DC-E4BDA707A36F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Serveri", "Serveri\FileSharing.Serveri\FileSharing.Serveri.csproj", "{972D9B73-8D92-4C2E-93DC-E4BDA707A36F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharingService", "Serveri\FileSharing_Service\FileSharingService.csproj", "{BC9055EE-3380-4AD3-9429-06D8CB816706}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Serveri.Service", "Serveri\FileSharing.Serveri.Service\FileSharing.Serveri.Service.csproj", "{BC9055EE-3380-4AD3-9429-06D8CB816706}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServeriTests", "ServeriTests\ServeriTests.csproj", "{93A6D25A-A7D0-4EEC-8658-125052D20778}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Serveri.Tests", "Tests\FileSharing.Serveri.Tests\FileSharing.Serveri.Tests.csproj", "{93A6D25A-A7D0-4EEC-8658-125052D20778}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Core", "Core\FileSharing.Core.csproj", "{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
