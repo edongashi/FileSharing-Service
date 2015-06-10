@@ -39,8 +39,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Model\Dukshmeria.cs" />
+    <Compile Include="Model\FajllInfo.cs" />
+    <Compile Include="Sherbimet\Abstrakt\IFileTransferKerkese.cs" />
+    <Compile Include="Sherbimet\Abstrakt\IKlientKomunikues.cs" />
+    <Compile Include="Sherbimet\Abstrakt\IKlientPranues.cs" />
+    <Compile Include="Sherbimet\Abstrakt\IUserManager.cs" />
+    <Compile Include="Sherbimet\Klient.cs" />
+    <Compile Include="PacketProtocol.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Infrastruktura\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
