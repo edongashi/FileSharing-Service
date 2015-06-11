@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using FileSharing.Core.Protokoli;
 using FileSharing.Serveri.Modeli;
 using FileSharing.Serveri.Sherbimet.Abstrakt;
 
@@ -9,11 +12,12 @@ namespace FileSharing.Serveri
     {
         private bool startuar;
 
-        public Server(IUserManager repository, IKlientPranues klientPranuesi, IFileKomunikuesPranues komunikuesPranuesi)
+        public Server(IRepository repository, IPathResolver pathat, IServerServiceLocator serviceLocator)
         {
             Repository = repository;
-            KlientPranuesi = klientPranuesi;
-            KomunikuesPranuesi = komunikuesPranuesi;
+            PathResolver = pathat;
+            KlientPranuesi = serviceLocator.MerrKlientPranues();
+            TransferPranuesi = serviceLocator.MerrFilePranues();
             KlientetLoguar = new Dictionary<string, IKlientKomunikues>();
             Transferet = new Dictionary<int, TransferTikete>();
         }
@@ -32,11 +36,13 @@ namespace FileSharing.Serveri
 
         #region Komponentet
 
-        public IUserManager Repository { get; set; }
+        public IRepository Repository { get; set; }
+
+        public IPathResolver PathResolver { get; set; }
 
         public IKlientPranues KlientPranuesi { get; private set; }
 
-        public IFileKomunikuesPranues KomunikuesPranuesi { get; private set; }
+        public IFileKomunikuesPranues TransferPranuesi { get; private set; }
 
         #endregion
 
@@ -48,7 +54,7 @@ namespace FileSharing.Serveri
             }
 
             KlientPranuesi.Starto();
-            KomunikuesPranuesi.Starto();
+            TransferPranuesi.Starto();
             Task.Factory.StartNew(DegjoKomunikim, TaskCreationOptions.LongRunning);
             Task.Factory.StartNew(DegjoTransfer, TaskCreationOptions.LongRunning);
             startuar = true;
@@ -58,9 +64,9 @@ namespace FileSharing.Serveri
         {
             startuar = false;
             KlientPranuesi.Ndalo();
-            KomunikuesPranuesi.Ndalo();
+            TransferPranuesi.Ndalo();
             KlientetLoguar.Clear();
-            Transferet.Clear(); 
+            Transferet.Clear();
         }
 
         private async void DegjoKomunikim()
@@ -83,15 +89,66 @@ namespace FileSharing.Serveri
             {
                 return;
             }
-
-
         }
 
         private async void DegjoTransfer()
         {
             while (startuar)
             {
-                var kerkesaKomunikuesi = await KomunikuesPranuesi.PranoFileKomunikuesAsync();
+                var fileKerkesa = await TransferPranuesi.PranoFileKomunikuesAsync();
+                try
+                {
+                    var tiketaId = fileKerkesa.TiketaId;
+                    TransferTikete tiketa;
+                    if (Transferet.TryGetValue(tiketaId, out tiketa))
+                    {
+                        Transferet.Remove(tiketaId);
+                        if (tiketa.Kahu == KahuTransferit.Ngarkim)
+                        {
+                            var tempFile = PathResolver.GetTempFile();
+                            var file = new FileStream(tempFile, FileMode.CreateNew);
+                            // ReSharper disable once CSharpWarnings::CS4014
+                            Task.Run(async () =>
+                            {
+                                Mesazh pergjigja;
+                                try
+                                {
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    await fileKerkesa.PranoFajllAsync(file);
+                                    //tiketa.Fajlli.
+                                }
+                                catch (HashFailException)
+                                {
+                                    pergjigja = new Mesazh(Header.HashFail);
+                                }
+                                catch
+                                {
+                                    pergjigja = new Mesazh(Header.Gabim);
+                                }
+
+                                try
+                                {
+                                    await fileKerkesa.KthePergjigjeAsync(pergjigja);
+                                }
+                                catch
+                                {
+                                }
+                                finally
+                                {
+                                    fileKerkesa.Dispose();
+                                }
+                            });
+                        }
+                    }
+                    else
+                    {
+                        await fileKerkesa.KthePergjigjeAsync(new Mesazh(Header.BadTicket));
+                    }
+                }
+                catch
+                {
+                    fileKerkesa.Dispose();
+                }
             }
         }
     }

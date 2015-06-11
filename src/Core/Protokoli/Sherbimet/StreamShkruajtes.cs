@@ -7,20 +7,46 @@ namespace FileSharing.Core.Protokoli.Sherbimet
 {
     public class StreamShkruajtes : IStreamShkruajtes
     {
-        public Task ShkruajMesazhAsync(Stream streami, Mesazh mesazhi)
+        public Task ShkruajMesazhAsync(Stream pranuesi, Mesazh mesazhi)
         {
             var mesazhiGjatesia = mesazhi.TeDhenat.Length + 1;
             var bufferi = new byte[Konfigurimi.PrefixGjatesia + mesazhiGjatesia];
             Buffer.BlockCopy(BitConverter.GetBytes(mesazhiGjatesia), 0, bufferi, 0, Konfigurimi.PrefixGjatesia);
             bufferi[Konfigurimi.PrefixGjatesia] = mesazhi.Header;
             Buffer.BlockCopy(mesazhi.TeDhenat, 0, bufferi, Konfigurimi.PrefixGjatesia + 1, mesazhi.TeDhenat.Length);
-            return streami.WriteAsync(bufferi, 0, bufferi.Length);
+            return pranuesi.WriteAsync(bufferi, 0, bufferi.Length);
         }
 
-        public async Task<Mesazh> LexoMesazhAsync(Stream streami)
+        public Task ShkruajMesazhMeGjatesiAsync(Stream pranuesi, Mesazh mesazhi, int gjatesia)
         {
+            if (gjatesia < 1)
+            {
+                throw new InvalidOperationException();
+            }
+
+            var mesazhiGjatesia = mesazhi.TeDhenat.Length + 1;
+            var bufferi = new byte[Konfigurimi.PrefixGjatesia + mesazhiGjatesia];
+            Buffer.BlockCopy(BitConverter.GetBytes(gjatesia), 0, bufferi, 0, Konfigurimi.PrefixGjatesia);
+            bufferi[Konfigurimi.PrefixGjatesia] = mesazhi.Header;
+            Buffer.BlockCopy(mesazhi.TeDhenat, 0, bufferi, Konfigurimi.PrefixGjatesia + 1, mesazhi.TeDhenat.Length);
+            return pranuesi.WriteAsync(bufferi, 0, bufferi.Length);
+        }
+
+        public async Task<Mesazh> LexoMesazhAsync(Stream derguesi)
+        {
+            var lexuar = 0;
             var mesazhiGjatesiaBuffer = new byte[Konfigurimi.PrefixGjatesia];
-            await streami.ReadAsync(mesazhiGjatesiaBuffer, 0, Konfigurimi.PrefixGjatesia);
+            while (lexuar < Konfigurimi.PrefixGjatesia)
+            {
+                var delta = await derguesi.ReadAsync(mesazhiGjatesiaBuffer, lexuar, Konfigurimi.PrefixGjatesia - lexuar);
+                if (delta == 0)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                lexuar += delta;
+            }
+
             var mesazhiGjatesia = BitConverter.ToInt32(mesazhiGjatesiaBuffer, 0);
             if (mesazhiGjatesia < 0)
             {
@@ -32,8 +58,19 @@ namespace FileSharing.Core.Protokoli.Sherbimet
                 return new Mesazh(Header.PaHeader);
             }
 
+            lexuar = 0;
             var bufferi = new byte[mesazhiGjatesia];
-            await streami.ReadAsync(bufferi, 0, mesazhiGjatesia);
+            while (lexuar < mesazhiGjatesia)
+            {
+                var delta = await derguesi.ReadAsync(bufferi, lexuar, mesazhiGjatesia - lexuar);
+                if (delta == 0)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                lexuar += delta;
+            }
+
             var header = bufferi[0];
             var teDhenat = new byte[mesazhiGjatesia - 1];
             Buffer.BlockCopy(bufferi, 1, teDhenat, 0, teDhenat.Length);

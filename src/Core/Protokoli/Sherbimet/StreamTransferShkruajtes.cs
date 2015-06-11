@@ -32,9 +32,20 @@ namespace FileSharing.Core.Protokoli.Sherbimet
             var hashAlgoritmi = HashAlgorithm.Create(Konfigurimi.HashAlgoritmi);
 
             var buffer = new byte[Konfigurimi.PaketMadhesia];
+            var lexuar = 0;
             for (var i = 0; i < numriPaketavePlota; i++)
             {
-                await derguesi.ReadAsync(buffer, 0, Konfigurimi.PaketMadhesia);
+                while (lexuar < Konfigurimi.PaketMadhesia)
+                {
+                    var delta = await derguesi.ReadAsync(buffer, lexuar, Konfigurimi.PaketMadhesia - lexuar);
+                    if (delta == 0)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
+                    lexuar += delta;
+                }
+
                 await pranuesi.WriteAsync(buffer, 0, Konfigurimi.PaketMadhesia);
                 // ReSharper disable once PossibleNullReferenceException
                 hashAlgoritmi.TransformBlock(buffer, 0, Konfigurimi.PaketMadhesia, null, 0);
@@ -43,11 +54,23 @@ namespace FileSharing.Core.Protokoli.Sherbimet
                 {
                     PaketDerguar(this, new PaketTransferuarEventArgs(i, totalPaketa));
                 }
+
+                lexuar = 0;
             }
 
             if (teprica != 0)
             {
-                await derguesi.ReadAsync(buffer, 0, teprica);
+                while (lexuar < teprica)
+                {
+                    var delta = await derguesi.ReadAsync(buffer, lexuar, teprica - lexuar);
+                    if (delta == 0)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
+                    lexuar += delta;
+                }
+
                 await pranuesi.WriteAsync(buffer, 0, teprica);
                 // ReSharper disable once PossibleNullReferenceException
                 hashAlgoritmi.TransformFinalBlock(buffer, 0, teprica);
@@ -89,9 +112,20 @@ namespace FileSharing.Core.Protokoli.Sherbimet
             var totalPaketa = numriPaketavePlota + 1 + teprica > 0 ? 1 : 0;
 
             var buffer = new byte[Konfigurimi.PaketMadhesia];
+            var lexuar = 0;
             for (var i = 0; i < numriPaketavePlota; i++)
             {
-                await derguesi.ReadAsync(buffer, 0, Konfigurimi.PaketMadhesia);
+                while (lexuar < Konfigurimi.PaketMadhesia)
+                {
+                    var delta = await derguesi.ReadAsync(buffer, lexuar, Konfigurimi.PaketMadhesia - lexuar);
+                    if (delta == 0)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
+                    lexuar += delta;
+                }
+
                 await pranuesi.WriteAsync(buffer, 0, Konfigurimi.PaketMadhesia);
                 // ReSharper disable once PossibleNullReferenceException
                 hashAlgoritmi.TransformBlock(buffer, 0, Konfigurimi.PaketMadhesia, null, 0);
@@ -100,11 +134,23 @@ namespace FileSharing.Core.Protokoli.Sherbimet
                 {
                     PaketPranuar(this, new PaketTransferuarEventArgs(i, totalPaketa));
                 }
+
+                lexuar = 0;
             }
 
             if (teprica != 0)
             {
-                await derguesi.ReadAsync(buffer, 0, teprica);
+                while (lexuar < teprica)
+                {
+                    var delta = await derguesi.ReadAsync(buffer, lexuar, teprica - lexuar);
+                    if (delta == 0)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
+                    lexuar += delta;
+                }
+
                 await pranuesi.WriteAsync(buffer, 0, teprica);
                 // ReSharper disable once PossibleNullReferenceException
                 hashAlgoritmi.TransformFinalBlock(buffer, 0, teprica);
@@ -121,7 +167,17 @@ namespace FileSharing.Core.Protokoli.Sherbimet
 
             var hashLlogaritur = hashAlgoritmi.Hash;
             var hashPranuar = new byte[hashGjatesia];
-            await derguesi.ReadAsync(hashPranuar, 0, hashGjatesia);
+            lexuar = 0;
+            while (lexuar < hashGjatesia)
+            {
+                var delta = await derguesi.ReadAsync(hashPranuar, lexuar, hashGjatesia - lexuar);
+                if (delta == 0)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                lexuar += delta;
+            }
             if (!hashLlogaritur.SequenceEqual(hashPranuar))
             {
                 throw new HashFailException();

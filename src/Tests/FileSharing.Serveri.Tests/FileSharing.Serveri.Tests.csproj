@@ -54,15 +54,6 @@
     <Compile Include="ServerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Serveri\FileSharing.Serveri\FileSharing.Serveri.csproj">
-      <Project>{972d9b73-8d92-4c2e-93dc-e4bda707a36f}</Project>
-      <Name>FileSharing.Serveri</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Fakes Include="Fakes\FileSharing.Serveri.fakes" />
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

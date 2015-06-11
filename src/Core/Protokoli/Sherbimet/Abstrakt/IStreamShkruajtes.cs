@@ -8,8 +8,10 @@ namespace FileSharing.Core.Protokoli.Sherbimet.Abstrakt
     /// </summary>
     public interface IStreamShkruajtes
     {
-        Task ShkruajMesazhAsync(Stream streami, Mesazh mesazhi);
+        Task ShkruajMesazhAsync(Stream pranuesi, Mesazh mesazhi);
 
-        Task<Mesazh> LexoMesazhAsync(Stream streami);
+        Task ShkruajMesazhMeGjatesiAsync(Stream pranuesi, Mesazh mesazhi, int gjatesia);
+
+        Task<Mesazh> LexoMesazhAsync(Stream derguesi);
     }
 }

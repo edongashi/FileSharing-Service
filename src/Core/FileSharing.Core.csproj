@@ -39,8 +39,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultCoreServices.cs" />
+    <Compile Include="ICoreServiceLocator.cs" />
     <Compile Include="Modeli\Dukshmeria.cs" />
     <Compile Include="Modeli\FajllInfo.cs" />
+    <Compile Include="XmlSerializues.cs" />
     <Compile Include="Modeli\Shfrytezues.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protokoli\HashFailException.cs" />
