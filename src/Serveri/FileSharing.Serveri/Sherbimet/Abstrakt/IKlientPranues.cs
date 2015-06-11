@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace ServeriCore.Sherbimet.Abstrakt
+namespace FileSharing.Serveri.Sherbimet.Abstrakt
 {
     public interface IKlientPranues
     {

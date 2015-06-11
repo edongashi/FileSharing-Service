@@ -20,5 +20,10 @@
         public byte Header { get; set; }
 
         public byte[] TeDhenat { get; set; }
+
+        public int Gjatesia
+        {
+            get { return TeDhenat.Length + 1; }
+        }
     }
 }

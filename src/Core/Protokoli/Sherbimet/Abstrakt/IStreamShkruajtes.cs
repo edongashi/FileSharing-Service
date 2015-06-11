@@ -1,8 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using FileSharing.Core.Protokoli;
 
-namespace Shared.Protokoli.Sherbimet.Abstrakt
+namespace FileSharing.Core.Protokoli.Sherbimet.Abstrakt
 {
     /// <summary>
     /// Mundeson komunikimin e dyanshem ne stream

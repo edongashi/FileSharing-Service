@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FileSharing.Serveri.Modeli;
-using ServeriCore.Sherbimet.Abstrakt;
+using FileSharing.Serveri.Sherbimet.Abstrakt;
 
 namespace FileSharing.Serveri
 {

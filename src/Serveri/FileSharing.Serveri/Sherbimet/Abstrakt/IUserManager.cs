@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using FileSharing.Core.Modeli;
 
-namespace ServeriCore.Sherbimet.Abstrakt
+namespace FileSharing.Serveri.Sherbimet.Abstrakt
 {
     /// <summary>
     /// Mundeson lidhje ne baze te dhenave per te lexuar dhe menaxhuar shfrytezuesit.

@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
-using FileSharing.Core.Protokoli;
-using Shared.Protokoli.Sherbimet.Abstrakt;
+using FileSharing.Core.Protokoli.Sherbimet.Abstrakt;
 
-namespace Shared.Protokoli.Sherbimet
+namespace FileSharing.Core.Protokoli.Sherbimet
 {
     public class StreamTransferShkruajtes : IStreamTransferShkruajtes
     {
@@ -80,6 +76,12 @@ namespace Shared.Protokoli.Sherbimet
             var hashAlgoritmi = HashAlgorithm.Create(Konfigurimi.HashAlgoritmi);
             // ReSharper disable once PossibleNullReferenceException
             var hashGjatesia = hashAlgoritmi.HashSize / 8;
+
+            if (gjatesia <= hashGjatesia)
+            {
+                throw new ArgumentException("Gjatesia e leximit me e vogel se gjatesia e hash funksionit.");
+            }
+
             var gjatesiaPaHash = gjatesia - hashGjatesia;
 
             var numriPaketavePlota = gjatesiaPaHash / Konfigurimi.PaketMadhesia;

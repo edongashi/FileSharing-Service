@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.Protokoli.Sherbimet.Abstrakt
+namespace FileSharing.Core.Protokoli.Sherbimet.Abstrakt
 {
     /// <summary>
     /// Mundeson transferin nga nje stream ne tjetrin.

@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{93A6D25A-A7D0-4EEC-8658-125052D20778}</ProjectGuid>
+    <ProjectGuid>{50F5BD21-5B6A-48AD-B17B-9C69C0486BBA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FileSharing.Serveri.Tests</RootNamespace>
-    <AssemblyName>FileSharing.Serveri.Tests</AssemblyName>
+    <RootNamespace>FileSharing.Core.Tests</RootNamespace>
+    <AssemblyName>FileSharing.Core.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,7 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -51,18 +50,16 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ServerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protokoli\StreamShkruajtesitTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Serveri\FileSharing.Serveri\FileSharing.Serveri.csproj">
-      <Project>{972d9b73-8d92-4c2e-93dc-e4bda707a36f}</Project>
-      <Name>FileSharing.Serveri</Name>
+    <ProjectReference Include="..\..\Core\FileSharing.Core.csproj">
+      <Project>{b9475a01-b218-4c6e-a3d0-0d8a91dfcf57}</Project>
+      <Name>FileSharing.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Fakes Include="Fakes\FileSharing.Serveri.fakes" />
-  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

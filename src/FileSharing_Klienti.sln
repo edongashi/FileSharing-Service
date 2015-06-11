@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Klienti.UI", "K
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Core", "Core\FileSharing.Core.csproj", "{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Klienti.Tests", "Tests\FileSharing.Klienti.Tests\FileSharing.Klienti.Tests.csproj", "{213DECEC-4A73-4A37-BEA9-60407421CBBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{213DECEC-4A73-4A37-BEA9-60407421CBBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{213DECEC-4A73-4A37-BEA9-60407421CBBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{213DECEC-4A73-4A37-BEA9-60407421CBBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{213DECEC-4A73-4A37-BEA9-60407421CBBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

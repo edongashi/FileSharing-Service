@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FileSharing.Core.Protokoli;
-using Shared.Protokoli;
 
-namespace ServeriCore.Sherbimet.Abstrakt
+namespace FileSharing.Serveri.Sherbimet.Abstrakt
 {
     /// <summary>
     /// Paraqet komunikimin e dyanshem me klient ne kanalin komunikues.

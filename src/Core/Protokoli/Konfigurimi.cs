@@ -8,6 +8,6 @@
 
         public const bool TestoHash = true;
 
-        public const string HashAlgoritmi = "SHA1";
+        public const string HashAlgoritmi = "MD5";
     }
 }

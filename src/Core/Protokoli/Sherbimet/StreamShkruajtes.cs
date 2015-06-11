@@ -1,12 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using FileSharing.Core.Protokoli;
-using Shared.Protokoli.Sherbimet.Abstrakt;
+using FileSharing.Core.Protokoli.Sherbimet.Abstrakt;
 
-namespace Shared.Protokoli.Sherbimet
+namespace FileSharing.Core.Protokoli.Sherbimet
 {
-    class StreamShkruajtes : IStreamShkruajtes
+    public class StreamShkruajtes : IStreamShkruajtes
     {
         public Task ShkruajMesazhAsync(Stream streami, Mesazh mesazhi)
         {
@@ -14,7 +13,7 @@ namespace Shared.Protokoli.Sherbimet
             var bufferi = new byte[Konfigurimi.PrefixGjatesia + mesazhiGjatesia];
             Buffer.BlockCopy(BitConverter.GetBytes(mesazhiGjatesia), 0, bufferi, 0, Konfigurimi.PrefixGjatesia);
             bufferi[Konfigurimi.PrefixGjatesia] = mesazhi.Header;
-            Buffer.BlockCopy(mesazhi.TeDhenat, 0, bufferi, mesazhiGjatesia, mesazhi.TeDhenat.Length);
+            Buffer.BlockCopy(mesazhi.TeDhenat, 0, bufferi, Konfigurimi.PrefixGjatesia + 1, mesazhi.TeDhenat.Length);
             return streami.WriteAsync(bufferi, 0, bufferi.Length);
         }
 

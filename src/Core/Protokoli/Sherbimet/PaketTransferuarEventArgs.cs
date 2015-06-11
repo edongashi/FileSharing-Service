@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Shared.Protokoli.Sherbimet
+namespace FileSharing.Core.Protokoli.Sherbimet
 {
     public class PaketTransferuarEventArgs : EventArgs
     {
