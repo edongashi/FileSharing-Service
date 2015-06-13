@@ -35,12 +35,8 @@ namespace FileSharing.Serveri.Sherbimet
 
                     if (delta == 0)
                     {
-                        try
-                        {
-                            tcpStream.Dispose();
-                            klienti.Close();
-                        }
-                        catch { }
+                        tcpStream.Dispose();
+                        klienti.Close();
                         continue;
                     }
 
@@ -50,12 +46,8 @@ namespace FileSharing.Serveri.Sherbimet
                 var mesazhiGjatesia = BitConverter.ToInt32(gjatesiaPrefix, 0);
                 if (mesazhiGjatesia < Konfigurimi.TiketGjatesia)
                 {
-                    try
-                    {
-                        tcpStream.Dispose();
-                        klienti.Close();
-                    }
-                    catch { }
+                    tcpStream.Close();
+                    klienti.Close();
                     continue;
                 }
 
@@ -67,12 +59,8 @@ namespace FileSharing.Serveri.Sherbimet
 
                     if (delta == 0)
                     {
-                        try
-                        {
-                            tcpStream.Dispose();
-                            klienti.Close();
-                        }
-                        catch { }
+                        tcpStream.Close();
+                        klienti.Close();
                         continue;
                     }
 

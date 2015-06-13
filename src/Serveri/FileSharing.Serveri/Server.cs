@@ -1,21 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using FileSharing.Core;
+using FileSharing.Core.Modeli;
 using FileSharing.Core.Protokoli;
+using FileSharing.Serveri.Infrastruktura.Abstrakt;
 using FileSharing.Serveri.Modeli;
 using FileSharing.Serveri.Sherbimet.Abstrakt;
+
+#pragma warning disable 4014
 
 namespace FileSharing.Serveri
 {
     public class Server
     {
+        private readonly SemaphoreSlim transferetSemafori;
         private bool startuar;
 
-        public Server(IRepository repository, IPathResolver pathat, IServerServiceLocator serviceLocator)
+        public Server(IRepository repository, IPathResolver pathat, IServerServiceLocator serviceLocator,
+            int maxTransfere)
         {
             Repository = repository;
             PathResolver = pathat;
+            this.transferetSemafori = new SemaphoreSlim(maxTransfere);
             KlientPranuesi = serviceLocator.MerrKlientPranues();
             TransferPranuesi = serviceLocator.MerrFilePranues();
             KlientetLoguar = new Dictionary<string, IKlientKomunikues>();
@@ -83,7 +93,6 @@ namespace FileSharing.Serveri
             try
             {
                 var kerkesa = await komunikuesi.PranoAsync();
-                //if ()
             }
             catch
             {
@@ -96,60 +105,110 @@ namespace FileSharing.Serveri
             while (startuar)
             {
                 var fileKerkesa = await TransferPranuesi.PranoFileKomunikuesAsync();
-                try
+                var tiketaId = fileKerkesa.TiketaId;
+                TransferTikete tiketa;
+                if (!Transferet.TryGetValue(tiketaId, out tiketa))
                 {
-                    var tiketaId = fileKerkesa.TiketaId;
-                    TransferTikete tiketa;
-                    if (Transferet.TryGetValue(tiketaId, out tiketa))
-                    {
-                        Transferet.Remove(tiketaId);
-                        if (tiketa.Kahu == KahuTransferit.Ngarkim)
-                        {
-                            var tempFile = PathResolver.GetTempFile();
-                            var file = new FileStream(tempFile, FileMode.CreateNew);
-                            // ReSharper disable once CSharpWarnings::CS4014
-                            Task.Run(async () =>
-                            {
-                                Mesazh pergjigja;
-                                try
-                                {
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    await fileKerkesa.PranoFajllAsync(file);
-                                    //tiketa.Fajlli.
-                                }
-                                catch (HashFailException)
-                                {
-                                    pergjigja = new Mesazh(Header.HashFail);
-                                }
-                                catch
-                                {
-                                    pergjigja = new Mesazh(Header.Gabim);
-                                }
-
-                                try
-                                {
-                                    await fileKerkesa.KthePergjigjeAsync(pergjigja);
-                                }
-                                catch
-                                {
-                                }
-                                finally
-                                {
-                                    fileKerkesa.Dispose();
-                                }
-                            });
-                        }
-                    }
-                    else
-                    {
-                        await fileKerkesa.KthePergjigjeAsync(new Mesazh(Header.BadTicket));
-                    }
+                    await fileKerkesa.KthePergjigjeAsync(new Mesazh(Header.BadTicket));
+                    continue;
                 }
-                catch
+
+                Transferet.Remove(tiketaId);
+                var busy = !await transferetSemafori.WaitAsync(1000);
+                if (busy)
                 {
+                    await fileKerkesa.KthePergjigjeAsync(new Mesazh(Header.ServerBusy));
                     fileKerkesa.Dispose();
+                    continue;
+                }
+
+                var fajlli = tiketa.Fajlli;
+                if (tiketa.Kahu == KahuTransferit.Ngarkim)
+                {
+                    var tempFile = PathResolver.GetTempFile();
+                    Task.Run(async () =>
+                    {
+                        Mesazh pergjigja;
+                        try
+                        {
+                            var fileStream = new FileStream(tempFile, FileMode.Create);
+                            try
+                            {
+                                await fileKerkesa.PranoFajllAsync(fileStream);
+                            }
+                            catch
+                            {
+                                fileStream.Close();
+                                File.Delete(tempFile);
+                                throw;
+                            }
+
+
+                            fajlli.Dukshmeria = Dukshmeria.Private;
+                            fajlli.Madhesia = (int)fileStream.Length;
+                            fajlli.DataShtimit = DateTime.Now;
+                            Repository.ShtoFajll(fajlli);
+
+                            fileStream.Close();
+
+                            // Fajlli sukses, dergoje ne folder te vertet
+                            File.Move(tempFile, PathResolver.GetFileInDataPath(fajlli.Id.ToString()));
+                            pergjigja = new Mesazh(Header.Ok, XmlSerializues<FajllInfo>.Serializo(fajlli));
+                        }
+                        catch (HashFailException)
+                        {
+                            pergjigja = new Mesazh(Header.HashFail);
+                        }
+                        catch
+                        {
+                            pergjigja = new Mesazh(Header.Gabim);
+                        }
+
+                        try
+                        {
+                            await fileKerkesa.KthePergjigjeAsync(pergjigja);
+                        }
+                        catch
+                        {
+                        }
+                        finally
+                        {
+                            fileKerkesa.Dispose();
+                            transferetSemafori.Release();
+                        }
+                    });
+                }
+                else // Download
+                {
+                    var filePath = PathResolver.GetFileInDataPath(fajlli.Id.ToString());
+                    Task.Run(async () =>
+                    {
+                        if (!File.Exists(filePath))
+                        {
+                            await fileKerkesa.KthePergjigjeAsync(new Mesazh(Header.FileNotFound));
+                            fileKerkesa.Dispose();
+                            transferetSemafori.Release();
+                            return;
+                        }
+
+                        try
+                        {
+                            var fileStream = new FileStream(filePath, FileMode.Open);
+                            await fileKerkesa.DergoFajllAsync(Header.Ok, fileStream, (int)fileStream.Length);
+                        }
+                        catch
+                        {
+                        }
+                        finally
+                        {
+                            fileKerkesa.Dispose();
+                            transferetSemafori.Release();
+                        }
+                    });
                 }
             }
         }
     }
 }
+
+#pragma warning restore 4014

@@ -1,22 +1,24 @@
 ﻿using System.Collections.Generic;
 using FileSharing.Core.Modeli;
 
-namespace FileSharing.Serveri.Sherbimet.Abstrakt
+namespace FileSharing.Serveri.Infrastruktura.Abstrakt
 {
     /// <summary>
     /// Mundeson lidhje ne baze te dhenave per te lexuar dhe menaxhuar shfrytezuesit.
     /// </summary>
-    public interface IUserManager
+    public interface IRepository
     {
         bool TestoLogin(string useri, string passwordi);
 
-        bool ProvoKrijoUser(string useri, string passwordi);
+        bool KrijoUser(string useri, string passwordi);
 
-        bool ProvoNderroPassword(string useri, string passVjeter, string passRi);
+        bool NderroPassword(string useri, string passVjeter, string passRi);
+
+        FajllInfo MerrFajllInfo(int id);
 
         IEnumerable<FajllInfo> MerrFajllatUserit(string useri);
 
-        bool ShtoFajllPerUser(string user, FajllInfo fajlli);
+        bool ShtoFajll(FajllInfo fajlli);
 
         IEnumerable<FajllInfo> MerrFajllatPublikUserit(string useri);
     }

@@ -11,7 +11,7 @@ namespace FileSharing.Serveri.Sherbimet
     {
         private readonly TcpClient tcpKlienti;
         private readonly NetworkStream tcpStream;
-        
+
         public TcpKlientKomunikues(TcpClient tcpKlienti, NetworkStream tcpStream, IStreamShkruajtes komunikuesi)
         {
             this.tcpKlienti = tcpKlienti;
@@ -33,12 +33,8 @@ namespace FileSharing.Serveri.Sherbimet
 
         public void Dispose()
         {
-            try
-            {
-                tcpStream.Close();
-                tcpKlienti.Close();
-            }
-            catch { }
+            tcpStream.Close();
+            tcpKlienti.Close();
         }
     }
 }

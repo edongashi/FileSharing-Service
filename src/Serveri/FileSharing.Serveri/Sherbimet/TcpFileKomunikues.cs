@@ -44,11 +44,11 @@ namespace FileSharing.Serveri.Sherbimet
             return Transferuesi.PranoStreamAsync(fileGjatesia, tcpStream, pranuesi);
         }
 
-        public async Task DergoFajllAsync(byte header, Stream derguesi, int gjatesia)
+        public async Task DergoFajllAsync(byte header, Stream fajlli, int gjatesiaFajllit)
         {
-            var gjatesiaTotali = 1 + gjatesia;
+            var gjatesiaTotali = 1 + gjatesiaFajllit;
             await Komunikuesi.ShkruajMesazhMeGjatesiAsync(tcpStream, new Mesazh(header), gjatesiaTotali);
-            await Transferuesi.DergoStreamAsync(gjatesia, derguesi, tcpStream);
+            await Transferuesi.DergoStreamAsync(gjatesiaFajllit, fajlli, tcpStream);
         }
 
         public Task KthePergjigjeAsync(Mesazh pergjigja)
@@ -58,12 +58,8 @@ namespace FileSharing.Serveri.Sherbimet
 
         public void Dispose()
         {
-            try
-            {
-                tcpStream.Close();
-                tcpKlienti.Close();
-            }
-            catch { }
+            tcpStream.Close();
+            tcpKlienti.Close();
         }
     }
 }

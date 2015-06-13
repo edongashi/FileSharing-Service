@@ -200,8 +200,8 @@
         		<Rectangle
         			Height="18" Margin="0,2,3,0" Width="18" Fill="{DynamicResource AccentColorBrush}" HorizontalAlignment="Right" VerticalAlignment="Center">
         			<Rectangle.OpacityMask>
-        				<VisualBrush Stretch="Uniform"
-        					Visual="{DynamicResource appbar_check}" />
+        				<VisualBrush Stretch="Fill"
+        					Visual="{DynamicResource appbar_hourglass}" />
         			</Rectangle.OpacityMask>
         		</Rectangle>
         		<TextBlock Text="Fotoja.jpg" VerticalAlignment="Center" Margin="0" Grid.Column="1" HorizontalAlignment="Left"/>

@@ -1,4 +1,6 @@
-﻿namespace FileSharing.Core.Protokoli
+﻿using System.Text;
+
+namespace FileSharing.Core.Protokoli
 {
     /// <summary>
     /// Paraqet mesazhet qe shkembehen ndermjet klientit dhe serverit.
@@ -9,6 +11,11 @@
         {
             Header = header;
             TeDhenat = teDhenat;
+        }
+
+        public Mesazh(byte header, string permbajtja)
+            : this(header, Encoding.Default.GetBytes(permbajtja))
+        {
         }
 
         public Mesazh(byte header)

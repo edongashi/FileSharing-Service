@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FileSharing.Serveri.Sherbimet.Abstrakt;
 
-namespace FileSharing.Serveri.Sherbimet.Abstrakt
+namespace FileSharing.Serveri
 {
     /// <summary>
     /// Ofton sherbime konkrete nga shtresa e serverit.

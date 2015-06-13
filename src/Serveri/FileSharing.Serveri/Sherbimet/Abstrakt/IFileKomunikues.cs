@@ -14,7 +14,7 @@ namespace FileSharing.Serveri.Sherbimet.Abstrakt
 
         Task PranoFajllAsync(Stream pranuesi);
 
-        Task DergoFajllAsync(byte header, Stream derguesi, int gjatesia);
+        Task DergoFajllAsync(byte header, Stream fajlli, int gjatesiaFajllit);
 
         Task KthePergjigjeAsync(Mesazh pergjigja);
     }
