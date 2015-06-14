@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -17,18 +18,23 @@ namespace FileSharing.Serveri
 {
     public class Server
     {
+        private readonly string serverEmri;
+
         private readonly SemaphoreSlim transferetSemafori;
+        private readonly Random random;
         private bool startuar;
 
-        public Server(IRepository repository, IPathResolver pathat, IServerServiceLocator serviceLocator,
+        public Server(string emri, IRepository repository, IPathResolver pathat, IServerServiceLocator serviceLocator,
             int maxTransfere)
         {
+            serverEmri = emri;
             Repository = repository;
             PathResolver = pathat;
-            this.transferetSemafori = new SemaphoreSlim(maxTransfere);
+            transferetSemafori = new SemaphoreSlim(maxTransfere);
+            random = new Random();
             KlientPranuesi = serviceLocator.MerrKlientPranues();
             TransferPranuesi = serviceLocator.MerrFilePranues();
-            KlientetLoguar = new Dictionary<string, IKlientKomunikues>();
+            KlientetLoguar = new Dictionary<string, IKlientKomunikues>(StringComparer.OrdinalIgnoreCase);
             Transferet = new Dictionary<int, TransferTikete>();
         }
 
@@ -83,21 +89,188 @@ namespace FileSharing.Serveri
         {
             while (startuar)
             {
-                var klientiKomunikuesi = await KlientPranuesi.PranoKlientAsync();
-                Task.Run(() => BisedoMeKlient(klientiKomunikuesi));
+                var klienti = await KlientPranuesi.PranoKlientAsync();
+                Task.Run(() => BisedoMeKlient(klienti));
             }
         }
 
-        private async void BisedoMeKlient(IKlientKomunikues komunikuesi)
+        private async void BisedoMeKlient(IKlientKomunikues klienti)
         {
+            // Provo identifiko
+            Shfrytezues shfrytezuesi;
             try
             {
-                var kerkesa = await komunikuesi.PranoAsync();
+                var identifikimi = await klienti.PranoAsync();
+                if (identifikimi.Header != Header.Identifikim)
+                {
+                    await klienti.DergoAsync(new Mesazh(Header.IdentifikimGabim));
+                    klienti.Dispose();
+                    return;
+                }
+
+                shfrytezuesi = await ProvoParse<Shfrytezues>(klienti, identifikimi.TeDhenat);
+                if (shfrytezuesi != null)
+                {
+                    var loginOk = Repository.TestoLogin(shfrytezuesi.Emri, shfrytezuesi.Fjalekalimi);
+                    if (loginOk)
+                    {
+                        await klienti.DergoAsync(new Mesazh(Header.Ok, serverEmri));
+                        KlientetLoguar[shfrytezuesi.Emri] = klienti;
+                    }
+                    else
+                    {
+                        await klienti.DergoAsync(new Mesazh(Header.InvalidUserOsePass));
+                        klienti.Dispose();
+                        return;
+                    }
+                }
+                else
+                {
+                    klienti.Dispose();
+                    return;
+                }
             }
             catch
             {
+                klienti.Dispose();
                 return;
             }
+
+            while (startuar)
+            {
+                try
+                {
+                    var kerkesa = await klienti.PranoAsync();
+                    switch (kerkesa.Header)
+                    {
+                        case Header.KeepAlive:
+                            await klienti.DergoAsync(new Mesazh(Header.KeepAlive));
+                            break;
+
+                        case Header.Ckycje:
+                            KlientetLoguar.Remove(shfrytezuesi.Emri);
+                            klienti.Dispose();
+                            return;
+
+                        case Header.MerrFajllat:
+                            var fajllat = Repository.MerrFajllatUserit(shfrytezuesi.Emri);
+                            var fajllatSerializuar = XmlSerializuesi<IEnumerable<FajllInfo>>.SerializoBajt(fajllat);
+                            await klienti.DergoAsync(new Mesazh(Header.Ok, fajllatSerializuar));
+                            break;
+
+                        case Header.FileDownload:
+                            int idFile;
+                            if (IntegerKonvertuesi.ProvoNgaBajtat(kerkesa.TeDhenat, out idFile))
+                            {
+                                var fajlli = Repository.MerrFajllInfo(idFile);
+                                if (fajlli == null)
+                                {
+                                    await klienti.DergoAsync(new Mesazh(Header.FileNotFound));
+                                }
+                                else if (fajlli.Dukshmeria == Dukshmeria.Private && fajlli.Pronari != shfrytezuesi.Emri)
+                                {
+                                    await klienti.DergoAsync(new Mesazh(Header.PermissionGabim));
+                                }
+                                else
+                                {
+                                    // Fajlli ekziston & ka permission
+                                    int tiketaId;
+                                    do
+                                    {
+                                        tiketaId = random.Next();
+                                    } while (Transferet.ContainsKey(tiketaId));
+
+                                    Transferet[tiketaId] = new TransferTikete
+                                    {
+                                        // Krijon tikete per shkarkim qe do te konsumohet ne transfer kanal
+                                        Kahu = KahuTransferit.Shkarkim,
+                                        Fajlli = fajlli,
+                                        KohaKerkeses = DateTime.Now,
+                                        // DataSkadimit = ... per t'u implementuar
+                                    };
+
+                                    await klienti.DergoAsync(new Mesazh(Header.Ok, IntegerKonvertuesi.NeBajta(tiketaId)));
+                                }
+                            }
+                            else
+                            {
+                                await klienti.DergoAsync(new Mesazh(Header.ParseGabim));
+                            }
+
+                            break;
+
+                        case Header.FileUpload:
+                            var emri = kerkesa.Teksti;
+                            if (string.IsNullOrEmpty(emri))
+                            {
+                                await klienti.DergoAsync(new Mesazh(Header.ParseGabim));
+                            }
+                            else
+                            {
+                                var fajllInfo = new FajllInfo
+                                {
+                                    Emri = emri,
+                                    Pronari = shfrytezuesi.Emri
+                                };
+
+                                int tiketaId;
+                                do
+                                {
+                                    tiketaId = random.Next();
+                                } while (Transferet.ContainsKey(tiketaId));
+
+                                Transferet[tiketaId] = new TransferTikete
+                                {
+                                    // Tikete per upload
+                                    Kahu = KahuTransferit.Ngarkim,
+                                    Fajlli = fajllInfo,
+                                    KohaKerkeses = DateTime.Now,
+                                    // DataSkadimit = ... per t'u implementuar
+                                };
+
+                                await klienti.DergoAsync(new Mesazh(Header.Ok, IntegerKonvertuesi.NeBajta(tiketaId)));
+                            }
+
+                            break;
+
+                        case Header.Search:
+                            // TODO: Search
+                            break;
+
+                        default:
+                            await klienti.DergoAsync(new Mesazh(Header.Gabim));
+                            break;
+                    }
+                }
+                catch
+                {
+                    KlientetLoguar.Remove(shfrytezuesi.Emri);
+                    klienti.Dispose();
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Provon ta deserializoje objektin, nese nuk mundet i kthen mesazh gabimi klientit.
+        /// </summary>
+        private static async Task<T> ProvoParse<T>(IKlientKomunikues klienti, byte[] objektiBajtat) where T : class
+        {
+            T objekti = null;
+            try
+            {
+                objekti = XmlSerializuesi<T>.DeserializoBajt(objektiBajtat);
+            }
+            catch
+            {
+            }
+
+            if (objekti == null)
+            {
+                await klienti.DergoAsync(new Mesazh(Header.ParseGabim));
+            }
+
+            return objekti;
         }
 
         private async void DegjoTransfer()
@@ -153,7 +326,7 @@ namespace FileSharing.Serveri
 
                             // Fajlli sukses, dergoje ne folder te vertet
                             File.Move(tempFile, PathResolver.GetFileInDataPath(fajlli.Id.ToString()));
-                            pergjigja = new Mesazh(Header.Ok, XmlSerializues<FajllInfo>.Serializo(fajlli));
+                            pergjigja = new Mesazh(Header.Ok, XmlSerializuesi<FajllInfo>.Serializo(fajlli));
                         }
                         catch (HashFailException)
                         {

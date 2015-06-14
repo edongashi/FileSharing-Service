@@ -30,18 +30,20 @@
 
         public const byte IdentifikimGabim = 11;
 
-        public const byte PermissionGabim = 12;
+        public const byte InvalidUserOsePass = 12;
 
-        public const byte ServerBusy = 13;
+        public const byte PermissionGabim = 13;
 
-        public const byte FileNotFound = 14;
+        public const byte ServerBusy = 14;
 
-        public const byte FileNePerdorim = 15;
+        public const byte FileNotFound = 15;
 
-        public const byte BadTicket = 16;
+        public const byte FileNePerdorim = 16;
 
-        public const byte ParseGabim = 17;
+        public const byte BadTicket = 17;
 
-        public const byte HashFail = 18;
+        public const byte ParseGabim = 18;
+
+        public const byte HashFail = 19;
     }
 }

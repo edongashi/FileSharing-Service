@@ -28,6 +28,11 @@ namespace FileSharing.Core.Protokoli
 
         public byte[] TeDhenat { get; set; }
 
+        public string Teksti
+        {
+            get { return Encoding.Default.GetString(TeDhenat); }
+        }
+
         public int Gjatesia
         {
             get { return TeDhenat.Length + 1; }

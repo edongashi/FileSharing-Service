@@ -23,6 +23,11 @@ namespace FileSharing.Serveri.Infrastruktura
 
         public bool TestoLogin(string useri, string passwordi)
         {
+            if (string.IsNullOrEmpty(useri) || string.IsNullOrEmpty(passwordi))
+            {
+                return false;
+            }
+
             var hash = MerrHash(passwordi);
             using (var db = new DataContext(connection))
             {
