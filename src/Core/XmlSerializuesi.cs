@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace FileSharing.Core
@@ -11,25 +13,21 @@ namespace FileSharing.Core
         {
             using (var memoryStream = new MemoryStream())
             {
-                Serializuesi.Serialize(memoryStream, objekti);
+                var xmlWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
+                Serializuesi.Serialize(xmlWriter, objekti);
                 return memoryStream.ToArray();
             }
         }
 
         public static string Serializo(T objekti)
         {
-            using (var textWriter = new StringWriter())
-            {
-                Serializuesi.Serialize(textWriter, objekti);
-                return textWriter.ToString();
-            }
+            return Encoding.UTF8.GetString(SerializoBajt(objekti));
         }
 
         public static T DeserializoBajt(byte[] bajtat)
         {
             using (var memoryStream = new MemoryStream(bajtat))
             {
-                memoryStream.Position = 0;
                 return (T)Serializuesi.Deserialize(memoryStream);
             }
         }

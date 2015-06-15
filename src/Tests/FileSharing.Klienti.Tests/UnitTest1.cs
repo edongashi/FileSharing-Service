@@ -1,4 +1,5 @@
 ﻿using System;
+using FileSharing.Core.Modeli;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FileSharing.Klienti.Tests

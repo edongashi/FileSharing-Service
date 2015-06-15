@@ -9,11 +9,20 @@ namespace FileSharing.Core.Protokoli.Sherbimet
     {
         public Task ShkruajMesazhAsync(Stream pranuesi, Mesazh mesazhi)
         {
-            var mesazhiGjatesia = mesazhi.TeDhenat.Length + 1;
+            var mesazhiGjatesia = mesazhi.Gjatesia;
             var bufferi = new byte[Konfigurimi.PrefixGjatesia + mesazhiGjatesia];
-            Buffer.BlockCopy(BitConverter.GetBytes(mesazhiGjatesia), 0, bufferi, 0, Konfigurimi.PrefixGjatesia);
-            bufferi[Konfigurimi.PrefixGjatesia] = mesazhi.Header;
-            Buffer.BlockCopy(mesazhi.TeDhenat, 0, bufferi, Konfigurimi.PrefixGjatesia + 1, mesazhi.TeDhenat.Length);
+            if (mesazhi.Header != Header.PaHeader)
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes(mesazhiGjatesia), 0, bufferi, 0, Konfigurimi.PrefixGjatesia);
+                bufferi[Konfigurimi.PrefixGjatesia] = mesazhi.Header;
+                Buffer.BlockCopy(mesazhi.TeDhenat, 0, bufferi, Konfigurimi.PrefixGjatesia + 1, mesazhi.TeDhenat.Length);
+            }
+            else
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes(mesazhiGjatesia), 0, bufferi, 0, Konfigurimi.PrefixGjatesia);
+                Buffer.BlockCopy(mesazhi.TeDhenat, 0, bufferi, Konfigurimi.PrefixGjatesia, mesazhi.TeDhenat.Length);
+            }
+
             return pranuesi.WriteAsync(bufferi, 0, bufferi.Length);
         }
 
@@ -24,11 +33,20 @@ namespace FileSharing.Core.Protokoli.Sherbimet
                 throw new InvalidOperationException();
             }
 
-            var mesazhiGjatesia = mesazhi.TeDhenat.Length + 1;
+            var mesazhiGjatesia = mesazhi.Gjatesia;
             var bufferi = new byte[Konfigurimi.PrefixGjatesia + mesazhiGjatesia];
-            Buffer.BlockCopy(BitConverter.GetBytes(gjatesia), 0, bufferi, 0, Konfigurimi.PrefixGjatesia);
-            bufferi[Konfigurimi.PrefixGjatesia] = mesazhi.Header;
-            Buffer.BlockCopy(mesazhi.TeDhenat, 0, bufferi, Konfigurimi.PrefixGjatesia + 1, mesazhi.TeDhenat.Length);
+            if (mesazhi.Header != Header.PaHeader)
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes(gjatesia), 0, bufferi, 0, Konfigurimi.PrefixGjatesia);
+                bufferi[Konfigurimi.PrefixGjatesia] = mesazhi.Header;
+                Buffer.BlockCopy(mesazhi.TeDhenat, 0, bufferi, Konfigurimi.PrefixGjatesia + 1, mesazhi.TeDhenat.Length);
+            }
+            else
+            {
+                Buffer.BlockCopy(BitConverter.GetBytes(gjatesia), 0, bufferi, 0, Konfigurimi.PrefixGjatesia);
+                Buffer.BlockCopy(mesazhi.TeDhenat, 0, bufferi, Konfigurimi.PrefixGjatesia, mesazhi.TeDhenat.Length);
+            }
+
             return pranuesi.WriteAsync(bufferi, 0, bufferi.Length);
         }
 

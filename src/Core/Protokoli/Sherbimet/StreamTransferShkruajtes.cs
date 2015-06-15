@@ -19,7 +19,7 @@ namespace FileSharing.Core.Protokoli.Sherbimet
         /// </summary>
         /// <param name="gjatesia">
         /// Numri i bajtave qe do te lexohen nga derguesi.
-        /// Nuk perfshine gjatesine e hash funksioniet.
+        /// Nuk perfshin gjatesine e hash funksioniet.
         /// </param>
         /// <param name="derguesi">Stream nga ku do te merren te dhenat.</param>
         /// <param name="pranuesi">Stream ku do te dergohen te dhenat.</param>
@@ -27,7 +27,7 @@ namespace FileSharing.Core.Protokoli.Sherbimet
         {
             var numriPaketavePlota = gjatesia / Konfigurimi.PaketMadhesia;
             var teprica = gjatesia % Konfigurimi.PaketMadhesia;
-            var totalPaketa = numriPaketavePlota + 1 + teprica > 0 ? 1 : 0;
+            var totalPaketa = numriPaketavePlota + 1 + (teprica > 0 ? 1 : 0);
             
             var hashAlgoritmi = HashAlgorithm.Create(Konfigurimi.HashAlgoritmi);
 
@@ -96,20 +96,18 @@ namespace FileSharing.Core.Protokoli.Sherbimet
         // Ne kete rast parametri perfshin gjatesine e hash-it.
         public async Task PranoStreamAsync(int gjatesia, Stream derguesi, Stream pranuesi)
         {
-            var hashAlgoritmi = HashAlgorithm.Create(Konfigurimi.HashAlgoritmi);
-            // ReSharper disable once PossibleNullReferenceException
-            var hashGjatesia = hashAlgoritmi.HashSize / 8;
-
-            if (gjatesia <= hashGjatesia)
+            if (gjatesia <= Konfigurimi.HashGjatesia)
             {
                 throw new ArgumentException("Gjatesia e leximit me e vogel se gjatesia e hash funksionit.");
             }
 
-            var gjatesiaPaHash = gjatesia - hashGjatesia;
+            var gjatesiaPaHash = gjatesia - Konfigurimi.HashGjatesia;
 
             var numriPaketavePlota = gjatesiaPaHash / Konfigurimi.PaketMadhesia;
             var teprica = gjatesiaPaHash % Konfigurimi.PaketMadhesia;
-            var totalPaketa = numriPaketavePlota + 1 + teprica > 0 ? 1 : 0;
+            var totalPaketa = numriPaketavePlota + 1 + (teprica > 0 ? 1 : 0);
+
+            var hashAlgoritmi = HashAlgorithm.Create(Konfigurimi.HashAlgoritmi);
 
             var buffer = new byte[Konfigurimi.PaketMadhesia];
             var lexuar = 0;
@@ -154,9 +152,9 @@ namespace FileSharing.Core.Protokoli.Sherbimet
                 await pranuesi.WriteAsync(buffer, 0, teprica);
                 // ReSharper disable once PossibleNullReferenceException
                 hashAlgoritmi.TransformFinalBlock(buffer, 0, teprica);
-                if (PaketDerguar != null)
+                if (PaketPranuar != null)
                 {
-                    PaketDerguar(this, new PaketTransferuarEventArgs(totalPaketa - 1, totalPaketa));
+                    PaketPranuar(this, new PaketTransferuarEventArgs(totalPaketa - 1, totalPaketa));
                 }
             }
             else
@@ -166,11 +164,11 @@ namespace FileSharing.Core.Protokoli.Sherbimet
             }
 
             var hashLlogaritur = hashAlgoritmi.Hash;
-            var hashPranuar = new byte[hashGjatesia];
+            var hashPranuar = new byte[Konfigurimi.HashGjatesia];
             lexuar = 0;
-            while (lexuar < hashGjatesia)
+            while (lexuar < Konfigurimi.HashGjatesia)
             {
-                var delta = await derguesi.ReadAsync(hashPranuar, lexuar, hashGjatesia - lexuar);
+                var delta = await derguesi.ReadAsync(hashPranuar, lexuar, Konfigurimi.HashGjatesia - lexuar);
                 if (delta == 0)
                 {
                     throw new InvalidOperationException();
@@ -178,14 +176,15 @@ namespace FileSharing.Core.Protokoli.Sherbimet
 
                 lexuar += delta;
             }
+
             if (!hashLlogaritur.SequenceEqual(hashPranuar))
             {
                 throw new HashFailException();
             }
 
-            if (PaketDerguar != null)
+            if (PaketPranuar != null)
             {
-                PaketDerguar(this, new PaketTransferuarEventArgs(totalPaketa, totalPaketa));
+                PaketPranuar(this, new PaketTransferuarEventArgs(totalPaketa, totalPaketa));
             }
         }
     }

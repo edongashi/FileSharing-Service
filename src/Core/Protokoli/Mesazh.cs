@@ -14,7 +14,7 @@ namespace FileSharing.Core.Protokoli
         }
 
         public Mesazh(byte header, string permbajtja)
-            : this(header, Encoding.Default.GetBytes(permbajtja))
+            : this(header, Encoding.UTF8.GetBytes(permbajtja))
         {
         }
 
@@ -30,12 +30,22 @@ namespace FileSharing.Core.Protokoli
 
         public string Teksti
         {
-            get { return Encoding.Default.GetString(TeDhenat); }
+            get { return Encoding.UTF8.GetString(TeDhenat); }
         }
 
         public int Gjatesia
         {
-            get { return TeDhenat.Length + 1; }
+            get
+            {
+                if (Header == Protokoli.Header.PaHeader)
+                {
+                    return TeDhenat.Length;
+                }
+                else
+                {
+                    return TeDhenat.Length + 1;
+                }
+            }
         }
     }
 }

@@ -14,12 +14,16 @@ namespace FileSharing.Serveri.Infrastruktura.Abstrakt
 
         bool NderroPassword(string useri, string passVjeter, string passRi);
 
-        FajllInfo MerrFajllInfo(int id);
-
-        IEnumerable<FajllInfo> MerrFajllatUserit(string useri);
-
         bool ShtoFajll(FajllInfo fajlli);
 
-        IEnumerable<FajllInfo> MerrFajllatPublikUserit(string useri);
+        FajllInfo MerrFajllInfo(int id);
+
+        bool UpdateFajll(FajllInfo fajlli);
+
+        bool DeleteFajll(FajllInfo fajlli);
+
+        FajllInfo[] MerrFajllatUserit(string useri);
+
+        FajllInfo[] MerrFajllatPublikUserit(string useri);
     }
 }

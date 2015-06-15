@@ -55,7 +55,7 @@ namespace FileSharing.Serveri.Sherbimet
                 var ticketBuffer = new byte[Konfigurimi.TiketGjatesia];
                 while (lexuar < Konfigurimi.TiketGjatesia)
                 {
-                    var delta = await tcpStream.ReadAsync(gjatesiaPrefix, lexuar, Konfigurimi.TiketGjatesia - lexuar);
+                    var delta = await tcpStream.ReadAsync(ticketBuffer, lexuar, Konfigurimi.TiketGjatesia - lexuar);
 
                     if (delta == 0)
                     {
@@ -68,7 +68,7 @@ namespace FileSharing.Serveri.Sherbimet
                 }
 
                 var tiketa = BitConverter.ToInt32(ticketBuffer, 0);
-                var fajllGjatesia = mesazhiGjatesia - Konfigurimi.PrefixGjatesia - Konfigurimi.TiketGjatesia;
+                var fajllGjatesia = mesazhiGjatesia - Konfigurimi.TiketGjatesia;
                 return new TcpFileKomunikues(klienti, tcpStream, coreServiceLocator.MerrTransferues(),
                     coreServiceLocator.MerrKomunikues(), tiketa, fajllGjatesia);
             }

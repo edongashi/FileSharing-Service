@@ -8,8 +8,10 @@
 
         public const int PaketMadhesia = 1024;
 
-        public const bool TestoHash = true;
-
         public const string HashAlgoritmi = "MD5";
+
+        public const int HashGjatesia = 16;
+
+        public const int KeepAliveInterval = 1000;
     }
 }

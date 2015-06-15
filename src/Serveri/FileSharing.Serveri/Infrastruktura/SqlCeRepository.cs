@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -94,22 +95,6 @@ namespace FileSharing.Serveri.Infrastruktura
             }
         }
 
-        public FajllInfo MerrFajllInfo(int id)
-        {
-            using (var db = new DataContext(connection))
-            {
-                return db.Fajllat.Find(id);
-            }
-        }
-
-        public IEnumerable<FajllInfo> MerrFajllatUserit(string useri)
-        {
-            using (var db = new DataContext(connection))
-            {
-                return db.Fajllat.Where(fajlli => fajlli.Pronari == useri);
-            }
-        }
-
         public bool ShtoFajll(FajllInfo fajlli)
         {
             using (var db = new DataContext(connection))
@@ -127,11 +112,61 @@ namespace FileSharing.Serveri.Infrastruktura
             }
         }
 
-        public IEnumerable<FajllInfo> MerrFajllatPublikUserit(string useri)
+        public FajllInfo MerrFajllInfo(int id)
         {
             using (var db = new DataContext(connection))
             {
-                return db.Fajllat.Where(fajlli => fajlli.Pronari == useri && fajlli.Dukshmeria == Dukshmeria.Publike);
+                return db.Fajllat.Find(id);
+            }
+        }
+
+        public bool UpdateFajll(FajllInfo fajlli)
+        {
+            using (var db = new DataContext(connection))
+            {
+                try
+                {
+                    db.Entry(fajlli).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
+        public bool DeleteFajll(FajllInfo fajlli)
+        {
+            using (var db = new DataContext(connection))
+            {
+                try
+                {
+                    db.Entry(fajlli).State = EntityState.Deleted;
+                    db.SaveChanges();
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
+        public FajllInfo[] MerrFajllatUserit(string useri)
+        {
+            using (var db = new DataContext(connection))
+            {
+                return db.Fajllat.Where(fajlli => fajlli.Pronari == useri).ToArray();
+            }
+        }
+
+        public FajllInfo[] MerrFajllatPublikUserit(string useri)
+        {
+            using (var db = new DataContext(connection))
+            {
+                return db.Fajllat.Where(fajlli => fajlli.Pronari == useri && fajlli.Dukshmeria == Dukshmeria.Publike).ToArray();
             }
         }
 

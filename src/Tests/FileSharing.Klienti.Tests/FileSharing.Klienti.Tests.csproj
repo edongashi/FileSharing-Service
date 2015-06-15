@@ -53,6 +53,16 @@
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\FileSharing.Core.csproj">
+      <Project>{b9475a01-b218-4c6e-a3d0-0d8a91dfcf57}</Project>
+      <Name>FileSharing.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Klienti\FileSharing.Klienti\FileSharing.Klienti.csproj">
+      <Project>{bf1fb597-3eab-4004-a2fe-10800efb05a9}</Project>
+      <Name>FileSharing.Klienti</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

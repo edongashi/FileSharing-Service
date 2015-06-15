@@ -1,4 +1,4 @@
-﻿namespace FileSharing.Serveri.Modeli
+﻿namespace FileSharing.Core.Modeli
 {
     public enum KahuTransferit
     {

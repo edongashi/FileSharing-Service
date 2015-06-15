@@ -22,28 +22,34 @@
 
         public const byte FileUpload = 8;
 
+        public const byte FileDelete = 9;
+
+        public const byte BejePublik = 10;
+
+        public const byte BejePrivat = 11;
+
         // Server pergjigjet
 
-        public const byte Ok = 9;
+        public const byte Ok = 20;
 
-        public const byte Gabim = 10;
+        public const byte Gabim = 21;
 
-        public const byte IdentifikimGabim = 11;
+        public const byte IdentifikimGabim = 22;
 
-        public const byte InvalidUserOsePass = 12;
+        public const byte InvalidUserOsePass = 23;
 
-        public const byte PermissionGabim = 13;
+        public const byte PermissionGabim = 24;
 
-        public const byte ServerBusy = 14;
+        public const byte ServerBusy = 25;
 
-        public const byte FileNotFound = 15;
+        public const byte FileNotFound = 26;
 
-        public const byte FileNePerdorim = 16;
+        public const byte FileNePerdorim = 27;
 
-        public const byte BadTicket = 17;
+        public const byte BadTicket = 28;
 
-        public const byte ParseGabim = 18;
+        public const byte ParseGabim = 29;
 
-        public const byte HashFail = 19;
+        public const byte HashFail = 30;
     }
 }

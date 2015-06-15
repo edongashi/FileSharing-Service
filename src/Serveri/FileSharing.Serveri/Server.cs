@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -144,36 +145,85 @@ namespace FileSharing.Serveri
                     switch (kerkesa.Header)
                     {
                         case Header.KeepAlive:
-                            await klienti.DergoAsync(new Mesazh(Header.KeepAlive));
-                            break;
+                            {
+                                await klienti.DergoAsync(new Mesazh(Header.KeepAlive));
+                                break;
+                            }
 
                         case Header.Ckycje:
-                            KlientetLoguar.Remove(shfrytezuesi.Emri);
-                            klienti.Dispose();
-                            return;
+                            {
+                                KlientetLoguar.Remove(shfrytezuesi.Emri);
+                                klienti.Dispose();
+                                return;
+                            }
 
                         case Header.MerrFajllat:
-                            var fajllat = Repository.MerrFajllatUserit(shfrytezuesi.Emri);
-                            var fajllatSerializuar = XmlSerializuesi<IEnumerable<FajllInfo>>.SerializoBajt(fajllat);
-                            await klienti.DergoAsync(new Mesazh(Header.Ok, fajllatSerializuar));
-                            break;
+                            {
+                                var fajllat = Repository.MerrFajllatUserit(shfrytezuesi.Emri);
+                                var fajllatSerializuar = XmlSerializuesi<FajllInfo[]>.SerializoBajt(fajllat);
+                                await klienti.DergoAsync(new Mesazh(Header.Ok, fajllatSerializuar));
+                                break;
+                            }
 
                         case Header.FileDownload:
-                            int idFile;
-                            if (IntegerKonvertuesi.ProvoNgaBajtat(kerkesa.TeDhenat, out idFile))
                             {
-                                var fajlli = Repository.MerrFajllInfo(idFile);
-                                if (fajlli == null)
+                                int idFile;
+                                if (IntegerKonvertuesi.ProvoNgaBajtat(kerkesa.TeDhenat, out idFile))
                                 {
-                                    await klienti.DergoAsync(new Mesazh(Header.FileNotFound));
-                                }
-                                else if (fajlli.Dukshmeria == Dukshmeria.Private && fajlli.Pronari != shfrytezuesi.Emri)
-                                {
-                                    await klienti.DergoAsync(new Mesazh(Header.PermissionGabim));
+                                    var fajlli = Repository.MerrFajllInfo(idFile);
+                                    if (fajlli == null)
+                                    {
+                                        await klienti.DergoAsync(new Mesazh(Header.FileNotFound));
+                                    }
+                                    else if (fajlli.Dukshmeria == Dukshmeria.Private && !String.Equals(fajlli.Pronari, shfrytezuesi.Emri, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        await klienti.DergoAsync(new Mesazh(Header.PermissionGabim));
+                                    }
+                                    else
+                                    {
+                                        // Fajlli ekziston & ka permission
+                                        int tiketaId;
+                                        do
+                                        {
+                                            tiketaId = random.Next();
+                                        } while (Transferet.ContainsKey(tiketaId));
+
+                                        Transferet[tiketaId] = new TransferTikete
+                                        {
+                                            // Krijon tikete per shkarkim qe do te konsumohet ne transfer kanal
+                                            Kahu = KahuTransferit.Shkarkim,
+                                            Fajlli = fajlli,
+                                            KohaKerkeses = DateTime.Now,
+                                            // DataSkadimit = ... per t'u implementuar
+                                        };
+
+                                        await
+                                            klienti.DergoAsync(new Mesazh(Header.Ok, IntegerKonvertuesi.NeBajta(tiketaId)));
+                                    }
                                 }
                                 else
                                 {
-                                    // Fajlli ekziston & ka permission
+                                    await klienti.DergoAsync(new Mesazh(Header.ParseGabim));
+                                }
+
+                                break;
+                            }
+
+                        case Header.FileUpload:
+                            {
+                                var emri = kerkesa.Teksti;
+                                if (string.IsNullOrEmpty(emri))
+                                {
+                                    await klienti.DergoAsync(new Mesazh(Header.ParseGabim));
+                                }
+                                else
+                                {
+                                    var fajllInfo = new FajllInfo
+                                    {
+                                        Emri = emri,
+                                        Pronari = shfrytezuesi.Emri
+                                    };
+
                                     int tiketaId;
                                     do
                                     {
@@ -182,64 +232,112 @@ namespace FileSharing.Serveri
 
                                     Transferet[tiketaId] = new TransferTikete
                                     {
-                                        // Krijon tikete per shkarkim qe do te konsumohet ne transfer kanal
-                                        Kahu = KahuTransferit.Shkarkim,
-                                        Fajlli = fajlli,
+                                        // Tikete per upload
+                                        Kahu = KahuTransferit.Ngarkim,
+                                        Fajlli = fajllInfo,
                                         KohaKerkeses = DateTime.Now,
                                         // DataSkadimit = ... per t'u implementuar
                                     };
 
                                     await klienti.DergoAsync(new Mesazh(Header.Ok, IntegerKonvertuesi.NeBajta(tiketaId)));
                                 }
+
+                                break;
                             }
-                            else
+
+                        case Header.FileDelete:
                             {
-                                await klienti.DergoAsync(new Mesazh(Header.ParseGabim));
-                            }
-
-                            break;
-
-                        case Header.FileUpload:
-                            var emri = kerkesa.Teksti;
-                            if (string.IsNullOrEmpty(emri))
-                            {
-                                await klienti.DergoAsync(new Mesazh(Header.ParseGabim));
-                            }
-                            else
-                            {
-                                var fajllInfo = new FajllInfo
+                                int idFile;
+                                if (IntegerKonvertuesi.ProvoNgaBajtat(kerkesa.TeDhenat, out idFile))
                                 {
-                                    Emri = emri,
-                                    Pronari = shfrytezuesi.Emri
-                                };
+                                    var fajllInfo = Repository.MerrFajllInfo(idFile);
+                                    if (fajllInfo == null)
+                                    {
+                                        await klienti.DergoAsync(new Mesazh(Header.FileNotFound));
+                                    }
+                                    else if (
+                                        !String.Equals(fajllInfo.Pronari, shfrytezuesi.Emri,
+                                            StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        await klienti.DergoAsync(new Mesazh(Header.PermissionGabim));
+                                    }
+                                    else
+                                    {
+                                        var filePath = PathResolver.GetFileInDataPath(fajllInfo.Id.ToString());
+                                        if (File.Exists(filePath))
+                                        {
+                                            File.Delete(filePath);
+                                        }
 
-                                int tiketaId;
-                                do
+                                        if (Repository.DeleteFajll(fajllInfo))
+                                        {
+                                            await klienti.DergoAsync(new Mesazh(Header.Ok));
+                                        }
+                                        else
+                                        {
+                                            await klienti.DergoAsync(new Mesazh(Header.Gabim));
+                                        }
+                                    }
+                                }
+                                else
                                 {
-                                    tiketaId = random.Next();
-                                } while (Transferet.ContainsKey(tiketaId));
-
-                                Transferet[tiketaId] = new TransferTikete
-                                {
-                                    // Tikete per upload
-                                    Kahu = KahuTransferit.Ngarkim,
-                                    Fajlli = fajllInfo,
-                                    KohaKerkeses = DateTime.Now,
-                                    // DataSkadimit = ... per t'u implementuar
-                                };
-
-                                await klienti.DergoAsync(new Mesazh(Header.Ok, IntegerKonvertuesi.NeBajta(tiketaId)));
+                                    await klienti.DergoAsync(new Mesazh(Header.ParseGabim));
+                                }
+                                break;
                             }
-
-                            break;
 
                         case Header.Search:
-                            // TODO: Search
-                            break;
+                            {
+                                // TODO: Search
+                                break;
+                            }
+
+                        case Header.BejePublik:
+                        case Header.BejePrivat:
+                            {
+                                int idFile;
+                                if (IntegerKonvertuesi.ProvoNgaBajtat(kerkesa.TeDhenat, out idFile))
+                                {
+                                    var fajllInfo = Repository.MerrFajllInfo(idFile);
+                                    if (fajllInfo == null)
+                                    {
+                                        await klienti.DergoAsync(new Mesazh(Header.FileNotFound));
+                                    }
+                                    else if (
+                                        !String.Equals(fajllInfo.Pronari, shfrytezuesi.Emri,
+                                            StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        await klienti.DergoAsync(new Mesazh(Header.PermissionGabim));
+                                    }
+                                    else
+                                    {
+                                        fajllInfo.Dukshmeria = kerkesa.Header == Header.BejePublik
+                                            ? Dukshmeria.Publike
+                                            : Dukshmeria.Private;
+
+                                        if (Repository.UpdateFajll(fajllInfo))
+                                        {
+                                            await klienti.DergoAsync(new Mesazh(Header.Ok));
+                                        }
+                                        else
+                                        {
+                                            await klienti.DergoAsync(new Mesazh(Header.Gabim));
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    await klienti.DergoAsync(new Mesazh(Header.ParseGabim));
+                                }
+
+                                break;
+                            }
 
                         default:
-                            await klienti.DergoAsync(new Mesazh(Header.Gabim));
-                            break;
+                            {
+                                await klienti.DergoAsync(new Mesazh(Header.Gabim));
+                                break;
+                            }
                     }
                 }
                 catch
@@ -249,6 +347,8 @@ namespace FileSharing.Serveri
                     return;
                 }
             }
+
+            klienti.Dispose();
         }
 
         /// <summary>
@@ -287,7 +387,7 @@ namespace FileSharing.Serveri
                 }
 
                 Transferet.Remove(tiketaId);
-                var busy = !await transferetSemafori.WaitAsync(1000);
+                var busy = !await transferetSemafori.WaitAsync(500);
                 if (busy)
                 {
                     await fileKerkesa.KthePergjigjeAsync(new Mesazh(Header.ServerBusy));
@@ -298,6 +398,7 @@ namespace FileSharing.Serveri
                 var fajlli = tiketa.Fajlli;
                 if (tiketa.Kahu == KahuTransferit.Ngarkim)
                 {
+                    await fileKerkesa.KthePergjigjeAsync(new Mesazh(Header.Ok));
                     var tempFile = PathResolver.GetTempFile();
                     Task.Run(async () =>
                     {
@@ -315,14 +416,14 @@ namespace FileSharing.Serveri
                                 File.Delete(tempFile);
                                 throw;
                             }
-
+                            
+                            fajlli.Madhesia = (int)fileStream.Length;
+                            fileStream.Close();
 
                             fajlli.Dukshmeria = Dukshmeria.Private;
-                            fajlli.Madhesia = (int)fileStream.Length;
                             fajlli.DataShtimit = DateTime.Now;
                             Repository.ShtoFajll(fajlli);
 
-                            fileStream.Close();
 
                             // Fajlli sukses, dergoje ne folder te vertet
                             File.Move(tempFile, PathResolver.GetFileInDataPath(fajlli.Id.ToString()));
@@ -366,8 +467,10 @@ namespace FileSharing.Serveri
 
                         try
                         {
-                            var fileStream = new FileStream(filePath, FileMode.Open);
-                            await fileKerkesa.DergoFajllAsync(Header.Ok, fileStream, (int)fileStream.Length);
+                            using (var fileStream = new FileStream(filePath, FileMode.Open))
+                            {
+                                await fileKerkesa.DergoFajllAsync(Header.Ok, fileStream, (int)fileStream.Length);
+                            }
                         }
                         catch
                         {

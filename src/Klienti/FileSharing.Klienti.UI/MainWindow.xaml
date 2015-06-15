@@ -1,330 +1,613 @@
 ﻿<controls:MetroWindow
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="FileSharing.Klienti.UI.MainWindow"
-        Title="Shpërndarja e fajllave" Height="640" Width="1024"
-		EnableDWMDropShadow="true"
-		Style="{DynamicResource CleanWindowStyleKey}" WindowStartupLocation="CenterScreen" WindowState="Maximized" MinWidth="1024" MinHeight="640">
-
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="175"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="320"/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Rectangle Fill="{DynamicResource GrayBrush6}" HorizontalAlignment="Left" Margin="0,8,0,0" Grid.RowSpan="4" Width="1" Grid.Column="1"/>
-        <Rectangle Fill="{DynamicResource GrayBrush6}" HorizontalAlignment="Right" Margin="0,8,0,0" Grid.RowSpan="4" Width="1" Grid.Column="1"/>
-        <Rectangle Fill="{DynamicResource GrayBrush6}" VerticalAlignment="Bottom" Height="1"/>
-        <Rectangle Fill="{DynamicResource GrayBrush6}" VerticalAlignment="Top" Height="1" Grid.Row="2" Grid.Column="2"/>
-        <Rectangle Fill="{DynamicResource GrayBrush6}" VerticalAlignment="Top" Height="1" Grid.Row="3" Grid.Column="2"/>
-        <TabControl Grid.Column="1" Grid.RowSpan="4" controls:TabControlHelper.IsUnderlined="True" Margin="10,8,10,0">
-            <TabItem Header="Fajllat e mi" controls:ControlsHelper.HeaderFontSize="22">
-                <Grid/>
-            </TabItem>
-            <TabItem Header="Rezultatet e kërkimit" controls:ControlsHelper.HeaderFontSize="22">
-                <Grid/>
-            </TabItem>
-        </TabControl>
-        <TextBlock HorizontalAlignment="Left" Margin="16,16,0,0" VerticalAlignment="Top" Text="Informatat rreth fajllit" FontSize="21.333" Grid.Column="2" Foreground="{DynamicResource AccentColorBrush}" Height="28.373" Width="201.29"/>
-        <TextBox Margin="18,54,0,0"
-                         controls:TextBoxHelper.Watermark="Termi..."
-                         controls:TextBoxHelper.ClearTextButton="True"
-                         controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonCmd, Mode=OneWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="202" Grid.Row="1" Height="26">
-            <TextBox.Style>
-                <Style TargetType="{x:Type TextBox}"
-                               BasedOn="{StaticResource SearchMetroTextBox}">
-                    <Style.Triggers>
-                    	<Trigger Property="controls:TextBoxHelper.HasText"
-                    		Value="True">
-                    		<Setter Property="controls:TextBoxHelper.ButtonTemplate"
-                    			Value="{DynamicResource ChromelessButtonTemplate}" />
-                    	</Trigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBox.Style>
-        </TextBox>
-        <Button Content="Shko" HorizontalAlignment="Right" Margin="0,54,16,0" VerticalAlignment="Top" Width="75" Height="26" Grid.Row="1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="18,20,0,0" VerticalAlignment="Top" Text="Kërko shfrytëzues ose fajlla" FontSize="18.667" Foreground="{DynamicResource AccentColorBrush}" Grid.Row="1" Height="24.83" Width="222.28"/>
-        <ListBox Margin="16,92,16,0" Grid.Row="1" Grid.RowSpan="3"/>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="8,40,8,0">
-        	<Rectangle HorizontalAlignment="Left" Width="30" Height="30" VerticalAlignment="Center" Fill="{DynamicResource BlackBrush}" Margin="0,3,0,0" >
-        		<Rectangle.OpacityMask>
-        			<VisualBrush Visual="{StaticResource appbar_connect}" Stretch="Fill" />
-        		</Rectangle.OpacityMask>
-        	</Rectangle>
-        	<TextBlock VerticalAlignment="Top" FontSize="14.667" Margin="10,0,0,0" TextAlignment="Center"><Run Text="Konektuar në 193.168.100.117"/><LineBreak/><Run Text="(Server emri Edon-PC)"/></TextBlock>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,110,0,0">
-        	<TextBlock FontSize="14.667" Text="Kyçur si: "/>
-        	<TextBlock FontSize="14.667" Text="Edon"/>
-        	<TextBlock FontSize="14.667" Text=" | "/>
-        	<TextBlock FontSize="14.667" Text="Menaxho" Foreground="{DynamicResource HighlightBrush}" Cursor="Hand"/>
-        	<TextBlock FontSize="14.667" Text=" | "/>
-        	<TextBlock FontSize="14.667" Text="Ndërro" Foreground="{DynamicResource HighlightBrush}" Cursor="Hand"/>
-        </StackPanel>
-        <StackPanel Grid.Column="2" Margin="16,52,16,0" Orientation="Vertical" Grid.RowSpan="2" VerticalAlignment="Top" Height="129.533">
-        	<StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0">
-        		<TextBlock HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Text="Emri:" FontSize="14.667" Width="120"/>
-        		<TextBlock HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Text="foto.jpg" FontSize="14.667"/>
-        	</StackPanel>
-        	<StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,8,0,0">
-        		<TextBlock HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Text="Madhësia: " FontSize="14.667" Width="120"/>
-        		<TextBlock HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Text="75.6KB" FontSize="14.667"/>
-        	</StackPanel>
-        	<StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,8,0,0">
-        		<TextBlock HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Text="Pronari: " FontSize="14.667" Width="120"/>
-        		<TextBlock HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Text="Edon" FontSize="14.667"/>
-        	</StackPanel>
-        	<StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,8,0,0">
-        		<TextBlock HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Text="Dukshmëria:" FontSize="14.667" Width="120"/>
-        		<TextBlock HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Text="Private" FontSize="14.667"/>
-        	</StackPanel>
-        	<StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,8,0,0">
-        		<TextBlock HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Text="Shtuar më: " FontSize="14.667" Width="120"/>
-        		<TextBlock HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Text="10/06/2015" FontSize="14.667"/>
-        	</StackPanel>
-        </StackPanel>
-        <WrapPanel Grid.Column="2" Margin="8,17,8,8" Orientation="Horizontal" Grid.Row="1">
-        	<Button Style="{DynamicResource SquareButtonStyle}" Width="110" Margin="8" Height="32">
-        		<StackPanel Orientation="Horizontal">
-        			<Rectangle
-        				Height="18"
-        				Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Width="18" VerticalAlignment="Center" Margin="0">
-        				<Rectangle.OpacityMask>
-        					<VisualBrush Stretch="Fill"
-        						Visual="{DynamicResource appbar_download}" />
-        				</Rectangle.OpacityMask>
-        			</Rectangle>
-        			<TextBlock TextWrapping="Wrap" Text="SHKARKO" VerticalAlignment="Center" Margin="6,0,1,0"/>
-        		</StackPanel>
-        	</Button>
-        	<Button Style="{DynamicResource SquareButtonStyle}" Width="110" Margin="8" Height="32">
-        		<StackPanel Orientation="Horizontal">
-        			<Rectangle
-        				Height="18"
-        				Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Width="18" VerticalAlignment="Center" Margin="0">
-        				<Rectangle.OpacityMask>
-        					<VisualBrush Stretch="Fill"
-        						Visual="{DynamicResource appbar_tag}" />
-        				</Rectangle.OpacityMask>
-        			</Rectangle>
-        			<TextBlock TextWrapping="Wrap" Text="MERR LINK" VerticalAlignment="Center" Margin="6,0,0,0"/>
-        		</StackPanel>
-        	</Button>
-        	<Button Style="{DynamicResource SquareButtonStyle}" Width="110" Margin="8" Height="32">
-        		<StackPanel Orientation="Horizontal">
-        			<Rectangle
-        				Height="18"
-        				Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Width="18" VerticalAlignment="Center" Margin="0">
-        				<Rectangle.OpacityMask>
-        					<VisualBrush Stretch="Fill"
-        						Visual="{DynamicResource appbar_globe}" />
-        				</Rectangle.OpacityMask>
-        			</Rectangle>
-        			<TextBlock TextWrapping="Wrap" Text="BËJE PUBLIK" VerticalAlignment="Center" Margin="6,0,1,0"/>
-        		</StackPanel>
-        	</Button>
-        	<Button Style="{DynamicResource SquareButtonStyle}" Width="110" Margin="8" Height="32" Visibility="Collapsed">
-        		<StackPanel Orientation="Horizontal">
-        			<Rectangle
-        				Height="18"
-        				Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Width="18" VerticalAlignment="Center" Margin="0">
-        				<Rectangle.OpacityMask>
-        					<VisualBrush Stretch="Fill"
-        						Visual="{DynamicResource appbar_lock}" />
-        				</Rectangle.OpacityMask>
-        			</Rectangle>
-        			<TextBlock TextWrapping="Wrap" Text="BËJE PRIVAT" VerticalAlignment="Center" Margin="6,0,0,0"/>
-        		</StackPanel>
-        	</Button>
-        	<Button Style="{DynamicResource SquareButtonStyle}" Margin="8" Width="110" Height="32">
-        		<StackPanel Orientation="Horizontal">
-        			<Rectangle
-        				Height="18"
-        				Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Width="18" VerticalAlignment="Center" Margin="0">
-        				<Rectangle.OpacityMask>
-        					<VisualBrush Stretch="Fill"
-        						Visual="{DynamicResource appbar_delete}" />
-        				</Rectangle.OpacityMask>
-        			</Rectangle>
-        			<TextBlock TextWrapping="Wrap" Text="FSHIJ" VerticalAlignment="Center" Margin="6,0,7,0"/>
-        		</StackPanel>
-        	</Button>
-        </WrapPanel>
-        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="Shto fajlla të ri" FontSize="21.333" Foreground="{DynamicResource AccentColorBrush}" Margin="16,16,0,0" Grid.Row="2" Grid.Column="2" Height="28.373" Width="201.29"/>
-        <WrapPanel Margin="8,46,8,16" Grid.Row="2" Grid.Column="2">
-        	<Button Style="{DynamicResource SquareButtonStyle}" Width="110" Height="32" Margin="8">
-        		<StackPanel Orientation="Horizontal">
-        			<Rectangle
-        				Height="18"
-        				Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Width="18" VerticalAlignment="Center" Margin="0">
-        				<Rectangle.OpacityMask>
-        					<VisualBrush Stretch="Fill"
-        						Visual="{DynamicResource appbar_add}" />
-        				</Rectangle.OpacityMask>
-        			</Rectangle>
-        			<TextBlock TextWrapping="Wrap" Text="SHTO FAJLL" VerticalAlignment="Center" Margin="6,0,0,0"/>
-        		</StackPanel>
-        	</Button>
-        </WrapPanel>
-        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="Transferet" FontSize="21.333" Foreground="{DynamicResource AccentColorBrush}" Margin="16,16,0,0" Grid.Row="3" Grid.Column="2"/>
-        <Button Style="{DynamicResource SquareButtonStyle}" Margin="0,8,16,16" Width="110" Height="32" Grid.Row="3" Grid.Column="2" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-        	<StackPanel Orientation="Horizontal">
-        		<Rectangle
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:ViewModels="clr-namespace:FileSharing.Klienti.UI.ViewModels"
+                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:valueConverters="clr-namespace:FileSharing.Klienti.UI.ValueConverters"
+                      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" x:Class="FileSharing.Klienti.UI.MainWindow"
+                      Title="Shpërndarja e fajllave"
+                      Width="1024"
+                      Height="640"
+                      MinWidth="1024"
+                      MinHeight="640"
+                      EnableDWMDropShadow="true"
+                      ShowTitleBar="false"
+                      Style="{DynamicResource CleanWindowStyleKey}"
+                      WindowStartupLocation="CenterScreen"
+                      WindowState="Maximized"
+                      mc:Ignorable="d">
+    <controls:MetroWindow.Resources>
+        <valueConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <valueConverters:BoolToDukshmeriaConverter x:Key="BoolToDukshmeriaConverter" />
+        <valueConverters:FileSizeConverter x:Key="FileSizeConverter" />
+        <valueConverters:DateValueConverter x:Key="DateValueConverter" />
+        <DataTemplate x:Key="FajllItemTemplate">
+        	<Grid>
+        		<Grid.ColumnDefinitions>
+        			<ColumnDefinition Width="40" />
+        			<ColumnDefinition />
+        		</Grid.ColumnDefinitions>
+        		<Rectangle x:Name="PublikIcon"
+        			Width="24"
+        			Height="24"
+        			Margin="5"
+        			HorizontalAlignment="Center"
+        			VerticalAlignment="Center"
+        			Fill="{DynamicResource BlackBrush}"
+        			Visibility="Collapsed">
+        			<Rectangle.OpacityMask>
+        				<VisualBrush Stretch="Uniform" Visual="{DynamicResource appbar_globe}" />
+        			</Rectangle.OpacityMask>
+        		</Rectangle>
+        		<Rectangle x:Name="PrivatIcon"
+        			Width="22"
+        			Height="22"
+        			Margin="5"
+        			HorizontalAlignment="Center"
+        			VerticalAlignment="Center"
+        			Fill="{DynamicResource BlackBrush}"
+        			Visibility="Collapsed">
+        			<Rectangle.OpacityMask>
+        				<VisualBrush Stretch="Uniform" Visual="{DynamicResource appbar_lock}" />
+        			</Rectangle.OpacityMask>
+        		</Rectangle>
+        		<TextBlock Grid.Column="1"
+        			Margin="5,10,5,11"
+        			HorizontalAlignment="Stretch"
+        			VerticalAlignment="Center"
+        			FontSize="16"
+        			Text="{Binding Emri}"
+        			TextWrapping="Wrap" />
+        	</Grid>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding EshtePublik}" Value="True">
+                    <Setter TargetName="PrivatIcon" Property="Visibility" Value="Collapsed" />
+                    <Setter TargetName="PublikIcon" Property="Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding EshtePublik}" Value="False">
+                    <Setter TargetName="PrivatIcon" Property="Visibility" Value="Visible" />
+                    <Setter TargetName="PublikIcon" Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+        <DataTemplate x:Key="TransferTemplate">
+        	<Grid Height="30">
+        		<Grid.ColumnDefinitions>
+        			<ColumnDefinition Width="40" />
+        			<ColumnDefinition />
+        			<ColumnDefinition Width="Auto" />
+        			<ColumnDefinition Width="Auto" />
+        		</Grid.ColumnDefinitions>
+        		<Rectangle x:Name="DeshtuarIcon"
+        			Width="18"
         			Height="18"
-        			Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Width="18" VerticalAlignment="Center" Margin="0">
+        			Margin="0,2,6,0"
+        			HorizontalAlignment="Right"
+        			VerticalAlignment="Center"
+        			Fill="{DynamicResource ControlsValidationBrush}"
+        			Visibility="Hidden">
         			<Rectangle.OpacityMask>
-        				<VisualBrush Stretch="Fill"
-        					Visual="{DynamicResource appbar_clean}" />
+        				<VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_warning_circle}" />
         			</Rectangle.OpacityMask>
         		</Rectangle>
-        		<TextBlock TextWrapping="Wrap" Text="PASTRO" VerticalAlignment="Center" Margin="6,0"/>
+        		<Rectangle x:Name="PerfunduarIcon"
+        			Width="18"
+        			Height="18"
+        			Margin="0,2,5,0"
+        			HorizontalAlignment="Right"
+        			VerticalAlignment="Center"
+        			Fill="{DynamicResource AccentColorBrush}"
+        			Visibility="Hidden">
+        			<Rectangle.OpacityMask>
+        				<VisualBrush Stretch="Uniform" Visual="{DynamicResource appbar_check}" />
+        			</Rectangle.OpacityMask>
+        		</Rectangle>
+        		<controls:ProgressRing x:Name="ProgressRing"
+        			Width="30"
+        			Height="30"
+        			Margin="0" Visibility="Hidden" />
+        		<TextBlock x:Name="Emri"
+        			Grid.Column="1"
+        			HorizontalAlignment="Left"
+        			VerticalAlignment="Center"
+        			Text="{Binding FileEmri}"/>
+        		<controls:MetroProgressBar x:Name="ProgressBar"
+        			Grid.Column="1"
+        			Grid.ColumnSpan="2"
+        			Margin="0,0,0,3"
+        			VerticalAlignment="Bottom"
+        			Foreground="{DynamicResource AccentColorBrush}"
+        			Visibility="Hidden"
+        			Value="{Binding Perqindja}" Maximum="1" />
+        		<TextBlock x:Name="StatusiText"
+        			Grid.Column="2"
+        			Margin="6,0,0,0"
+        			VerticalAlignment="Center"
+        			Text="{Binding StatusiText}"
+        			Visibility="Visible" />
+        		<Rectangle x:Name="ShkarkimIcon"
+        			Grid.Column="3"
+        			Width="20"
+        			Height="20"
+        			Margin="6,0"
+        			VerticalAlignment="Center"
+        			Fill="{DynamicResource AccentColorBrush}">
+        			<Rectangle.OpacityMask>
+        				<VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_download}" />
+        			</Rectangle.OpacityMask>
+        		</Rectangle>
+        		<Rectangle x:Name="NgarkimIcon"
+        			Grid.Column="3"
+        			Width="20"
+        			Height="20"
+        			Margin="6,0"
+        			VerticalAlignment="Center"
+        			Fill="{DynamicResource AccentColorBrush}" Visibility="Hidden">
+        			<Rectangle.OpacityMask>
+        				<VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_upload}" />
+        			</Rectangle.OpacityMask>
+        		</Rectangle>
+        	</Grid>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding GjendjaTransferitNumerike}" Value="1">
+                    <Setter TargetName="ProgressRing" Property="Visibility" Value="Visible" />
+                    <Setter TargetName="ProgressBar" Property="Visibility" Value="Visible" />
+                    <Setter TargetName="ProgressRing" Property="IsActive" Value="True" />
+					<Setter TargetName="Emri" Property="Margin" Value="0,0,0,11" />
+				</DataTrigger>
+                <DataTrigger Binding="{Binding GjendjaTransferitNumerike}" Value="2">
+					<Setter TargetName="PerfunduarIcon" Property="Visibility" Value="Visible" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding GjendjaTransferitNumerike}" Value="3">
+					<Setter TargetName="DeshtuarIcon" Property="Visibility" Value="Visible" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding KahuTransferit}" Value="1">
+                    <Setter TargetName="ShkarkimIcon" Property="Visibility" Value="Hidden" />
+                    <Setter TargetName="NgarkimIcon" Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+        <ItemsPanelTemplate x:Key="SmoothLayoutPanelTemplate">
+        	<StackPanel IsItemsHost="True">
+        		<i:Interaction.Behaviors>
+        			<ei:FluidMoveBehavior Duration="0:0:0.5" AppliesTo="Children">
+        				<ei:FluidMoveBehavior.EaseY>
+        					<ExponentialEase EasingMode="EaseInOut"/>
+        				</ei:FluidMoveBehavior.EaseY>
+        			</ei:FluidMoveBehavior>
+        		</i:Interaction.Behaviors>
         	</StackPanel>
-        </Button>
-        <StackPanel Grid.Column="2" Margin="8,52,16,59" Orientation="Vertical" Grid.Row="3">
-        	<Grid VerticalAlignment="Top" Height="30">
-        		<Grid.ColumnDefinitions>
-        			<ColumnDefinition Width="40"/>
-        			<ColumnDefinition/>
-        			<ColumnDefinition Width="Auto"/>
-        			<ColumnDefinition Width="Auto"/>
-        		</Grid.ColumnDefinitions>
-        		<controls:ProgressRing Width="30" Height="30" Margin="0"/>
-        		<Rectangle
-        			Height="18" Margin="0,2,3,0" Width="18" Fill="{DynamicResource AccentColorBrush}" HorizontalAlignment="Right" VerticalAlignment="Center">
-        			<Rectangle.OpacityMask>
-        				<VisualBrush Stretch="Fill"
-        					Visual="{DynamicResource appbar_hourglass}" />
-        			</Rectangle.OpacityMask>
-        		</Rectangle>
-        		<TextBlock Text="Fotoja.jpg" VerticalAlignment="Center" Margin="0" Grid.Column="1" HorizontalAlignment="Left"/>
-        		<controls:MetroProgressBar VerticalAlignment="Bottom" Foreground="{DynamicResource AccentColorBrush}" Value="75" Margin="0,0,0,11" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed"/>
-        		<TextBlock Text="21:55:35" Grid.Column="2" VerticalAlignment="Center" Margin="6,0,0,0" Visibility="Collapsed"/>
-        		<Rectangle
-        			Height="20" Margin="6,0" Grid.Column="3" Width="20" Fill="{DynamicResource AccentColorBrush}" VerticalAlignment="Center">
-        			<Rectangle.OpacityMask>
-        				<VisualBrush Stretch="Fill"
-        					Visual="{DynamicResource appbar_download}" />
-        			</Rectangle.OpacityMask>
-        		</Rectangle>
-        	</Grid>
-        	<Grid VerticalAlignment="Top" Height="30">
-        		<Grid.ColumnDefinitions>
-        			<ColumnDefinition Width="40"/>
-        			<ColumnDefinition/>
-        			<ColumnDefinition Width="Auto"/>
-        			<ColumnDefinition Width="Auto"/>
-        		</Grid.ColumnDefinitions>
-        		<controls:ProgressRing Width="30" Height="30" Margin="0" IsActive="True"/>
-        		<Rectangle
-        			Height="18" Margin="0,2,3,0" Width="18" Fill="{DynamicResource AccentColorBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed">
-        			<Rectangle.OpacityMask>
-        				<VisualBrush Stretch="Uniform"
-        					Visual="{DynamicResource appbar_check}" />
-        			</Rectangle.OpacityMask>
-        		</Rectangle>
-        		<controls:MetroProgressBar VerticalAlignment="Bottom" Foreground="{DynamicResource AccentColorBrush}" Value="75" Margin="0,0,0,5" Grid.Column="1" Grid.ColumnSpan="2"/>
-        		<TextBlock Text="Fotoja.jpg" VerticalAlignment="Center" Margin="0,0,0,12" Grid.Column="1" HorizontalAlignment="Left"/>
-        		<TextBlock Text="21:55:35" Grid.Column="2" VerticalAlignment="Center" Margin="6,0,0,0" Visibility="Collapsed"/>
-        		<Rectangle
-        			Height="20" Margin="6,0" Grid.Column="3" Width="20" Fill="{DynamicResource AccentColorBrush}" VerticalAlignment="Center">
-        			<Rectangle.OpacityMask>
-        				<VisualBrush Stretch="Fill"
-        					Visual="{DynamicResource appbar_upload}" />
-        			</Rectangle.OpacityMask>
-        		</Rectangle>
-        	</Grid>
-        	<Grid VerticalAlignment="Top" Height="30">
-        		<Grid.ColumnDefinitions>
-        			<ColumnDefinition Width="40"/>
-        			<ColumnDefinition/>
-        			<ColumnDefinition Width="Auto"/>
-        			<ColumnDefinition Width="Auto"/>
-        		</Grid.ColumnDefinitions>
-        		<controls:ProgressRing Width="30" Height="30" Margin="0"/>
-        		<Rectangle
-        			Height="18" Margin="0,2,4,0" Width="18" Fill="{DynamicResource ControlsValidationBrush}" HorizontalAlignment="Right" VerticalAlignment="Center">
-        			<Rectangle.OpacityMask>
-        				<VisualBrush Stretch="Fill"
-        					Visual="{DynamicResource appbar_warning_circle}" />
-        			</Rectangle.OpacityMask>
-        		</Rectangle>
-        		<Rectangle
-        			Height="18" Margin="0,7,3,5" Width="18" Fill="{DynamicResource AccentColorBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed">
-        			<Rectangle.OpacityMask>
-        				<VisualBrush Stretch="Uniform"
-        					Visual="{DynamicResource appbar_check}" />
-        			</Rectangle.OpacityMask>
-        		</Rectangle>
-        		<TextBlock Text="Fotoja.jpg" VerticalAlignment="Center" Margin="0" Grid.Column="1" HorizontalAlignment="Left"/>
-        		<controls:MetroProgressBar VerticalAlignment="Bottom" Foreground="{DynamicResource AccentColorBrush}" Value="75" Margin="0,0,0,11" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed"/>
-        		<TextBlock Text="21:55:35" Grid.Column="2" VerticalAlignment="Center" Margin="6,0,0,0" Visibility="Collapsed"/>
-        		<Rectangle
-        			Height="20" Margin="6,0" Grid.Column="3" Width="20" Fill="{DynamicResource AccentColorBrush}" VerticalAlignment="Center">
-        			<Rectangle.OpacityMask>
-        				<VisualBrush Stretch="Fill"
-        					Visual="{DynamicResource appbar_download}" />
-        			</Rectangle.OpacityMask>
-        		</Rectangle>
-        	</Grid>
-        	<Grid VerticalAlignment="Top" Height="30">
-        		<Grid.ColumnDefinitions>
-        			<ColumnDefinition Width="40"/>
-        			<ColumnDefinition/>
-        			<ColumnDefinition Width="Auto"/>
-        			<ColumnDefinition Width="Auto"/>
-        		</Grid.ColumnDefinitions>
-        		<controls:ProgressRing Width="30" Height="30" Margin="0"/>
-        		<Rectangle
-        			Height="18" Margin="0,2,3,0" Width="18" Fill="{DynamicResource AccentColorBrush}" HorizontalAlignment="Right" VerticalAlignment="Center">
-        			<Rectangle.OpacityMask>
-        				<VisualBrush Stretch="Uniform"
-        					Visual="{DynamicResource appbar_check}" />
-        			</Rectangle.OpacityMask>
-        		</Rectangle>
-        		<TextBlock Text="Fotoja.jpg" VerticalAlignment="Center" Margin="0" Grid.Column="1" HorizontalAlignment="Left"/>
-        		<controls:MetroProgressBar VerticalAlignment="Bottom" Foreground="{DynamicResource AccentColorBrush}" Value="75" Margin="0,0,0,11" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed"/>
-        		<TextBlock Text="21:55:35" Grid.Column="2" VerticalAlignment="Center" Margin="6,0,0,0" Visibility="Collapsed"/>
-        		<Rectangle
-        			Height="20" Margin="6,0" Grid.Column="3" Width="20" Fill="{DynamicResource AccentColorBrush}" VerticalAlignment="Center">
-        			<Rectangle.OpacityMask>
-        				<VisualBrush Stretch="Fill"
-        					Visual="{DynamicResource appbar_download}" />
-        			</Rectangle.OpacityMask>
-        		</Rectangle>
-        	</Grid>
-        	<Grid VerticalAlignment="Top" Height="30">
-        		<Grid.ColumnDefinitions>
-        			<ColumnDefinition Width="40"/>
-        			<ColumnDefinition/>
-        			<ColumnDefinition Width="Auto"/>
-        			<ColumnDefinition Width="Auto"/>
-        		</Grid.ColumnDefinitions>
-        		<controls:ProgressRing Width="30" Height="30" Margin="0"/>
-        		<Rectangle
-        			Height="18" Margin="0,2,3,0" Width="18" Fill="{DynamicResource AccentColorBrush}" HorizontalAlignment="Right" VerticalAlignment="Center">
-        			<Rectangle.OpacityMask>
-        				<VisualBrush Stretch="Uniform"
-        					Visual="{DynamicResource appbar_check}" />
-        			</Rectangle.OpacityMask>
-        		</Rectangle>
-        		<TextBlock Text="Fotoja.jpg" VerticalAlignment="Center" Margin="0" Grid.Column="1" HorizontalAlignment="Left"/>
-        		<controls:MetroProgressBar VerticalAlignment="Bottom" Foreground="{DynamicResource AccentColorBrush}" Value="75" Margin="0,0,0,11" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed"/>
-        		<TextBlock Text="21:55:35" Grid.Column="2" VerticalAlignment="Center" Margin="6,0,0,0" Visibility="Collapsed"/>
-        		<Rectangle
-        			Height="20" Margin="6,0" Grid.Column="3" Width="20" Fill="{DynamicResource AccentColorBrush}" VerticalAlignment="Center">
-        			<Rectangle.OpacityMask>
-        				<VisualBrush Stretch="Fill"
-        					Visual="{DynamicResource appbar_download}" />
-        			</Rectangle.OpacityMask>
-        		</Rectangle>
-        	</Grid>
-        </StackPanel></Grid>
+        </ItemsPanelTemplate>
+    </controls:MetroWindow.Resources>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="175" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="320" />
+			<ColumnDefinition />
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+		<Rectangle Height="1"
+			VerticalAlignment="Bottom"
+			Fill="{DynamicResource GrayBrush6}" />
+		<StackPanel Margin="8,48,8,0"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Top"
+			Orientation="Horizontal">
+			<Rectangle Width="30"
+				Height="30"
+				Margin="0,3,0,0"
+				HorizontalAlignment="Left"
+				VerticalAlignment="Center"
+				Fill="{DynamicResource BlackBrush}">
+				<Rectangle.OpacityMask>
+					<VisualBrush Stretch="Fill" Visual="{StaticResource appbar_connect}" />
+				</Rectangle.OpacityMask>
+			</Rectangle>
+			<StackPanel Margin="10,0,0,0"
+				HorizontalAlignment="Center"
+				Orientation="Vertical">
+				<StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+					<TextBlock VerticalAlignment="Top"
+						FontSize="14.667"
+						Text="Konektuar në: "
+						TextAlignment="Center" />
+					<TextBlock VerticalAlignment="Top"
+						FontSize="14.667"
+						Text="{Binding Klienti.ServerAdresa}"
+						TextAlignment="Center" />
+				</StackPanel>
+				<StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+					<TextBlock VerticalAlignment="Top"
+						FontSize="14.667"
+						Text="Server emri: "
+						TextAlignment="Center" />
+					<TextBlock VerticalAlignment="Top"
+						FontSize="14.667"
+						Text="{Binding Klienti.ServerEmri}"
+						TextAlignment="Center" />
+				</StackPanel>
+			</StackPanel>
+		</StackPanel>
+		<StackPanel Margin="0,114,0,0"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Top"
+			Orientation="Horizontal">
+			<TextBlock FontSize="14.667" Text="Kyçur si: " />
+			<TextBlock FontSize="14.667" Text="{Binding Klienti.Shfrytezuesi}" />
+			<TextBlock FontSize="14.667" Text=" | " />
+			<TextBlock Cursor="Hand"
+				FontSize="14.667"
+				Foreground="{DynamicResource HighlightBrush}"
+				Text="Menaxho" />
+			<TextBlock FontSize="14.667" Text=" | " />
+			<TextBlock Cursor="Hand"
+				FontSize="14.667"
+				Foreground="{DynamicResource HighlightBrush}"
+				Text="Ndërro" />
+		</StackPanel>
+		<Rectangle Grid.RowSpan="4"
+			Grid.Column="1"
+			Width="1"
+			Margin="0,8,0,0"
+			HorizontalAlignment="Left"
+			Fill="{DynamicResource GrayBrush6}" />
+		<Rectangle Grid.RowSpan="4"
+			Grid.Column="1"
+			Width="1"
+			Margin="0,8,0,0"
+			HorizontalAlignment="Right"
+			Fill="{DynamicResource GrayBrush6}" />
+		<TabControl Grid.RowSpan="4"
+			Grid.Column="1"
+			Margin="10,12,10,0"
+			controls:TabControlHelper.IsUnderlined="True">
+			<TabItem Header="Fajllat e mi" controls:ControlsHelper.HeaderFontSize="22">
+				<Grid>
+					<ListBox Margin="0,8,0,0"
+						HorizontalContentAlignment="Stretch"
+						ItemTemplate="{DynamicResource FajllItemTemplate}"
+						ItemsSource="{Binding Fajllat}"
+						ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+						SelectedItem="{Binding FajllInfoSelektuar}" />
+				</Grid>
+			</TabItem>
+			<TabItem Header="Rezultatet e kërkimit" controls:ControlsHelper.HeaderFontSize="22">
+				<Grid />
+			</TabItem>
+		</TabControl>
+		<TextBlock Grid.Column="2"
+			Width="201.29"
+			Height="28.373"
+			Margin="16,16,0,0"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Top"
+			FontSize="21.333"
+			Foreground="{DynamicResource AccentColorBrush}"
+			Text="Informatat rreth fajllit" />
+		<StackPanel Grid.RowSpan="2"
+			Grid.Column="2"
+			Height="129.533"
+			Margin="16,52,16,0"
+			VerticalAlignment="Top"
+			Orientation="Vertical">
+			<StackPanel Margin="0"
+				VerticalAlignment="Top"
+				Orientation="Horizontal">
+				<TextBlock Width="120"
+					Margin="0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Top"
+					FontSize="14.667"
+					Text="Emri:" />
+				<TextBlock Margin="0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Top"
+					FontSize="14.667"
+					Text="{Binding FajllInfoSelektuar.Emri}" />
+			</StackPanel>
+			<StackPanel Margin="0,8,0,0"
+				VerticalAlignment="Top"
+				Orientation="Horizontal">
+				<TextBlock Width="120"
+					Margin="0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Top"
+					FontSize="14.667"
+					Text="Madhësia: " />
+				<TextBlock Margin="0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Top"
+					FontSize="14.667"
+					Text="{Binding FajllInfoSelektuar.Madhesia, Converter={StaticResource FileSizeConverter}}" />
+			</StackPanel>
+			<StackPanel Margin="0,8,0,0"
+				VerticalAlignment="Top"
+				Orientation="Horizontal">
+				<TextBlock Width="120"
+					Margin="0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Top"
+					FontSize="14.667"
+					Text="Pronari: " />
+				<TextBlock Margin="0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Top"
+					FontSize="14.667"
+					Text="{Binding FajllInfoSelektuar.Pronari}" />
+			</StackPanel>
+			<StackPanel Margin="0,8,0,0"
+				VerticalAlignment="Top"
+				Orientation="Horizontal">
+				<TextBlock Width="120"
+					Margin="0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Top"
+					FontSize="14.667"
+					Text="Dukshmëria:" />
+				<TextBlock Margin="0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Top"
+					FontSize="14.667"
+					Text="{Binding FajllInfoSelektuar.EshtePublik, Converter={StaticResource BoolToDukshmeriaConverter}}" />
+			</StackPanel>
+			<StackPanel Margin="0,8,0,0"
+				VerticalAlignment="Top"
+				Orientation="Horizontal">
+				<TextBlock Width="120"
+					Margin="0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Top"
+					FontSize="14.667"
+					Text="Shtuar më: " />
+				<TextBlock Margin="0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Top"
+					FontSize="14.667"
+					Text="{Binding FajllInfoSelektuar.DataShtimit, Converter={StaticResource DateValueConverter}}" />
+			</StackPanel>
+		</StackPanel>
+		<TextBox Grid.Row="1"
+			Width="202"
+			Height="26"
+			Margin="18,54,0,0"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Top"
+			controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonCmd, Mode=OneWay}"
+			controls:TextBoxHelper.ClearTextButton="True"
+			controls:TextBoxHelper.Watermark="Termi...">
+			<TextBox.Style>
+				<Style BasedOn="{StaticResource SearchMetroTextBox}" TargetType="{x:Type TextBox}">
+					<Style.Triggers>
+						<Trigger Property="controls:TextBoxHelper.HasText" Value="True">
+							<Setter Property="controls:TextBoxHelper.ButtonTemplate" Value="{DynamicResource ChromelessButtonTemplate}" />
+						</Trigger>
+					</Style.Triggers>
+				</Style>
+			</TextBox.Style>
+		</TextBox>
+		<Button Grid.Row="1"
+			Width="75"
+			Height="26"
+			Margin="0,54,16,0"
+			HorizontalAlignment="Right"
+			VerticalAlignment="Top"
+			Content="Shko" />
+		<TextBlock Grid.Row="1"
+			Width="222.28"
+			Height="24.83"
+			Margin="18,20,0,0"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Top"
+			FontSize="18.667"
+			Foreground="{DynamicResource AccentColorBrush}"
+			Text="Kërko shfrytëzues ose fajlla" />
+		<ListBox Grid.Row="1"
+			Grid.RowSpan="3"
+			Margin="16,92,16,0" />
+		<WrapPanel Grid.Row="1"
+			Grid.Column="2"
+			Margin="8,17,8,8"
+			Orientation="Horizontal">
+			<Button Width="110"
+				Height="32"
+				Margin="8"
+				Command="{Binding ShkarkoFajllCommand}"
+				Style="{DynamicResource SquareButtonStyle}">
+				<StackPanel Orientation="Horizontal">
+					<Rectangle Width="18"
+						Height="18"
+						Margin="0"
+						VerticalAlignment="Center"
+						Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+						<Rectangle.OpacityMask>
+							<VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_download}" />
+						</Rectangle.OpacityMask>
+					</Rectangle>
+					<TextBlock Margin="6,0,1,0"
+						VerticalAlignment="Center"
+						Text="SHKARKO"
+						TextWrapping="Wrap" />
+				</StackPanel>
+			</Button>
+			<Button Width="110"
+				Height="32"
+				Margin="8"
+				Command="{Binding MerrLinkCommand}"
+				Style="{DynamicResource SquareButtonStyle}">
+				<StackPanel Orientation="Horizontal">
+					<Rectangle Width="18"
+						Height="18"
+						Margin="0"
+						VerticalAlignment="Center"
+						Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+						<Rectangle.OpacityMask>
+							<VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_tag}" />
+						</Rectangle.OpacityMask>
+					</Rectangle>
+					<TextBlock Margin="6,0,0,0"
+						VerticalAlignment="Center"
+						Text="MERR LINK"
+						TextWrapping="Wrap" />
+				</StackPanel>
+			</Button>
+			<Button Width="110"
+				Height="32"
+				Margin="8"
+				Command="{Binding BejePublikCommand}"
+				Style="{DynamicResource SquareButtonStyle}"
+				Visibility="{Binding BejPublikDukshmeria, Converter={StaticResource BoolToVisibilityConverter}}">
+				<StackPanel Orientation="Horizontal">
+					<Rectangle Width="18"
+						Height="18"
+						Margin="0"
+						VerticalAlignment="Center"
+						Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+						<Rectangle.OpacityMask>
+							<VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_globe}" />
+						</Rectangle.OpacityMask>
+					</Rectangle>
+					<TextBlock Margin="6,0,1,0"
+						VerticalAlignment="Center"
+						Text="BËJE PUBLIK"
+						TextWrapping="Wrap" />
+				</StackPanel>
+			</Button>
+			<Button Width="110"
+				Height="32"
+				Margin="8"
+				Command="{Binding BejePrivatCommand}"
+				Style="{DynamicResource SquareButtonStyle}"
+				Visibility="{Binding BejPrivatDukshmeria, Converter={StaticResource BoolToVisibilityConverter}}">
+				<StackPanel Orientation="Horizontal">
+					<Rectangle Width="18"
+						Height="18"
+						Margin="0"
+						VerticalAlignment="Center"
+						Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+						<Rectangle.OpacityMask>
+							<VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_lock}" />
+						</Rectangle.OpacityMask>
+					</Rectangle>
+					<TextBlock Margin="6,0,0,0"
+						VerticalAlignment="Center"
+						Text="BËJE PRIVAT"
+						TextWrapping="Wrap" />
+				</StackPanel>
+			</Button>
+			<Button Width="110"
+				Height="32"
+				Margin="8"
+				ClickMode="{Binding FshijFajllCommand}"
+				Command="{Binding FshijFajllCommand}"
+				Style="{DynamicResource SquareButtonStyle}">
+				<StackPanel Orientation="Horizontal">
+					<Rectangle Width="18"
+						Height="18"
+						Margin="0"
+						VerticalAlignment="Center"
+						Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+						<Rectangle.OpacityMask>
+							<VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_delete}" />
+						</Rectangle.OpacityMask>
+					</Rectangle>
+					<TextBlock Margin="6,0,7,0"
+						VerticalAlignment="Center"
+						Text="FSHIJ"
+						TextWrapping="Wrap" />
+				</StackPanel>
+			</Button>
+		</WrapPanel>
+		<Rectangle Grid.Row="2"
+			Grid.Column="2"
+			Height="1"
+			VerticalAlignment="Top"
+			Fill="{DynamicResource GrayBrush6}" />
+		<TextBlock Grid.Row="2"
+			Grid.Column="2"
+			Width="201.29"
+			Height="28.373"
+			Margin="16,16,0,0"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Top"
+			FontSize="21.333"
+			Foreground="{DynamicResource AccentColorBrush}"
+			Text="Shto fajlla të ri" />
+		<WrapPanel Grid.Row="2"
+			Grid.Column="2"
+			Margin="8,46,8,16">
+			<Button Width="110"
+				Height="32"
+				Margin="8"
+				Command="{Binding ShtoFajllCommand}"
+				Style="{DynamicResource SquareButtonStyle}">
+				<StackPanel Orientation="Horizontal">
+					<Rectangle Width="18"
+						Height="18"
+						Margin="0"
+						VerticalAlignment="Center"
+						Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+						<Rectangle.OpacityMask>
+							<VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_add}" />
+						</Rectangle.OpacityMask>
+					</Rectangle>
+					<TextBlock Margin="6,0,0,0"
+						VerticalAlignment="Center"
+						Text="SHTO FAJLL"
+						TextWrapping="Wrap" />
+				</StackPanel>
+			</Button>
+		</WrapPanel>
+		<Rectangle Grid.Row="3"
+			Grid.Column="2"
+			Height="1"
+			VerticalAlignment="Top"
+			Fill="{DynamicResource GrayBrush6}" />
+		<TextBlock Grid.Row="3"
+			Grid.Column="2"
+			Margin="16,16,0,0"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Top"
+			FontSize="21.333"
+			Foreground="{DynamicResource AccentColorBrush}"
+			Text="Transferet" />
+		<Button Grid.Row="3"
+			Grid.Column="2"
+			Width="110"
+			Height="32"
+			Margin="0,8,16,16"
+			HorizontalAlignment="Right"
+			VerticalAlignment="Bottom"
+			Command="{Binding PastroTransferetCommand}"
+			Style="{DynamicResource SquareButtonStyle}">
+			<StackPanel Orientation="Horizontal">
+				<Rectangle Width="18"
+					Height="18"
+					Margin="0"
+					VerticalAlignment="Center"
+					Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+					<Rectangle.OpacityMask>
+						<VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_clean}" />
+					</Rectangle.OpacityMask>
+				</Rectangle>
+				<TextBlock Margin="6,0"
+					VerticalAlignment="Center"
+					Text="PASTRO"
+					TextWrapping="Wrap" />
+			</StackPanel>
+		</Button>
+		<ItemsControl Grid.Row="3"
+			Grid.Column="2"
+			Margin="8,52,16,59"
+			HorizontalContentAlignment="Stretch"
+			ItemTemplate="{DynamicResource TransferTemplate}"
+			ItemsSource="{Binding Klienti.Transferet}" ItemsPanel="{DynamicResource SmoothLayoutPanelTemplate}" />
+	</Grid>
 </controls:MetroWindow>

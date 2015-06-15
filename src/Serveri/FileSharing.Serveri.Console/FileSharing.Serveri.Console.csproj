@@ -4,15 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{941F51DB-3BAD-47D5-90BE-A078B830E908}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FileSharing.Core</RootNamespace>
-    <AssemblyName>FileSharing.Core</AssemblyName>
+    <RootNamespace>FileSharing.Serveri.Console</RootNamespace>
+    <AssemblyName>FileSharing.Serveri.Console</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -31,7 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -40,25 +42,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DefaultCoreServices.cs" />
-    <Compile Include="ICoreServiceLocator.cs" />
-    <Compile Include="IntegerKonvertuesi.cs" />
-    <Compile Include="Modeli\Dukshmeria.cs" />
-    <Compile Include="Modeli\FajllInfo.cs" />
-    <Compile Include="Modeli\KahuTransferit.cs" />
-    <Compile Include="XmlSerializuesi.cs" />
-    <Compile Include="Modeli\Shfrytezues.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Protokoli\HashFailException.cs" />
-    <Compile Include="Protokoli\Header.cs" />
-    <Compile Include="Protokoli\Konfigurimi.cs" />
-    <Compile Include="Protokoli\Mesazh.cs" />
-    <Compile Include="Protokoli\PrefixException.cs" />
-    <Compile Include="Protokoli\Sherbimet\Abstrakt\IStreamTransferShkruajtes.cs" />
-    <Compile Include="Protokoli\Sherbimet\Abstrakt\IStreamShkruajtes.cs" />
-    <Compile Include="Protokoli\Sherbimet\PaketTransferuarEventArgs.cs" />
-    <Compile Include="Protokoli\Sherbimet\StreamShkruajtes.cs" />
-    <Compile Include="Protokoli\Sherbimet\StreamTransferShkruajtes.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\FileSharing.Core.csproj">
+      <Project>{b9475a01-b218-4c6e-a3d0-0d8a91dfcf57}</Project>
+      <Name>FileSharing.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileSharing.Serveri\FileSharing.Serveri.csproj">
+      <Project>{972d9b73-8d92-4c2e-93dc-e4bda707a36f}</Project>
+      <Name>FileSharing.Serveri</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

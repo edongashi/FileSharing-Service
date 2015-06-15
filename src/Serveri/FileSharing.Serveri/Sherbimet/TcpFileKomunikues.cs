@@ -46,7 +46,7 @@ namespace FileSharing.Serveri.Sherbimet
 
         public async Task DergoFajllAsync(byte header, Stream fajlli, int gjatesiaFajllit)
         {
-            var gjatesiaTotali = 1 + gjatesiaFajllit;
+            var gjatesiaTotali = 1 + gjatesiaFajllit + Konfigurimi.HashGjatesia;
             await Komunikuesi.ShkruajMesazhMeGjatesiAsync(tcpStream, new Mesazh(header), gjatesiaTotali);
             await Transferuesi.DergoStreamAsync(gjatesiaFajllit, fajlli, tcpStream);
         }
