@@ -26,8 +26,10 @@ namespace FileSharing.Klienti.UI.ViewModels
         private Klient klienti;
 
         private ObservableCollection<FajllInfo> fajllat;
+        private ObservableCollection<RezultatKerkimi> rezultatetKerkimit;
 
         private FajllInfo fajllInfoSelektuar;
+        private RezultatKerkimi rezultatiSelektuar;
         private bool kaPronesiMbiFajllin;
 
         private int listaSelektuar;
@@ -109,6 +111,26 @@ namespace FileSharing.Klienti.UI.ViewModels
             }, arg => kaPronesiMbiFajllin);
 
             PastroTransferetCommand = new DelegateCommand(arg => klienti.PastroTransferet());
+
+            var rezultatetTest = new RezultatKerkimi[]
+            {
+                new RezultatKerkimi
+                {
+                    Emri = "15 Fajlla", LlojiRezultatit = LlojiRezultatit.Fajll,
+                    Fajllat = new[] { new FajllInfo { Emri = "Fajlli 1 deri 15" }}
+                },
+                new RezultatKerkimi { Emri = "Edon", LlojiRezultatit = LlojiRezultatit.Shfrytezues,
+                    Fajllat = new[] { new FajllInfo { Emri = "Fajllat Edon" }}
+                },
+                new RezultatKerkimi { Emri = "Ditjon", LlojiRezultatit = LlojiRezultatit.Shfrytezues,   
+                    Fajllat = new[] { new FajllInfo { Emri = "Fajllat Ditjon" }}
+                },
+                new RezultatKerkimi { Emri = "Mimoza", LlojiRezultatit = LlojiRezultatit.Shfrytezues,   
+                    Fajllat = new[] { new FajllInfo { Emri = "Fajllat Mimoza" }}
+                },
+            };
+
+            rezultatetKerkimit = new ObservableCollection<RezultatKerkimi>(rezultatetTest);
         }
 
         public DelegateCommand ShtoFajllCommand { get; private set; }
@@ -125,6 +147,16 @@ namespace FileSharing.Klienti.UI.ViewModels
 
         public DelegateCommand PastroTransferetCommand { get; private set; }
 
+        public ObservableCollection<RezultatKerkimi> RezultatetKerkimit
+        {
+            get { return rezultatetKerkimit; }
+            private set
+            {
+                rezultatetKerkimit = value;
+                OnPropertyChanged("RezultatetKerkimit");
+            }
+        }
+
         public ObservableCollection<FajllInfo> Fajllat
         {
             get { return fajllat; }
@@ -135,6 +167,15 @@ namespace FileSharing.Klienti.UI.ViewModels
             }
         }
 
+        public RezultatKerkimi RezultatiSelektuar
+        {
+            get { return rezultatiSelektuar; }
+            set
+            {
+                rezultatiSelektuar = value;
+                OnPropertyChanged("RezultatiSelektuar");
+            }
+        }
         public FajllInfo FajllInfoSelektuar
         {
             get { return fajllInfoSelektuar; }
@@ -177,6 +218,7 @@ namespace FileSharing.Klienti.UI.ViewModels
             set
             {
                 listaSelektuar = value;
+                FajllInfoSelektuar = null;
                 OnPropertyChanged("ListaSelektuar");
             }
         }

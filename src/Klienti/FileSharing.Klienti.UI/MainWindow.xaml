@@ -180,6 +180,42 @@
         		</i:Interaction.Behaviors>
         	</StackPanel>
         </ItemsPanelTemplate>
+        <DataTemplate x:Key="SearchItemTemplate">
+        	<Grid Height="Auto">
+        		<Grid.ColumnDefinitions>
+        			<ColumnDefinition Width="Auto"/>
+        			<ColumnDefinition Width="*"/>
+        		</Grid.ColumnDefinitions>
+        		<Rectangle x:Name="ShfrytezuesIcon"
+        			Width="25"
+        			Height="25"
+        			Margin="5"
+        			HorizontalAlignment="Center"
+        			VerticalAlignment="Center"
+        			Visibility="Visible" Fill="{DynamicResource BlackBrush}">
+        			<Rectangle.OpacityMask>
+        				<VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_user}" />
+        			</Rectangle.OpacityMask>
+        		</Rectangle>
+        		<Rectangle x:Name="FajllIcon"
+        			Width="25"
+        			Height="25"
+        			Margin="5,8.753,5,8.754"
+        			HorizontalAlignment="Center"
+        			VerticalAlignment="Center"
+        			Visibility="Hidden" Fill="{DynamicResource BlackBrush}">
+        			<Rectangle.OpacityMask>
+        				<VisualBrush Stretch="Uniform" Visual="{DynamicResource appbar_page_solid}" />
+        			</Rectangle.OpacityMask>
+        		</Rectangle>
+        		<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding Emri}" VerticalAlignment="Center" Margin="5,10" Grid.ColumnSpan="2" Grid.Column="2" FontSize="16"/></Grid>
+        	<DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding LlojiRezultatit}" Value="1">
+                    <Setter TargetName="ShfrytezuesIcon" Property="Visibility" Value="Hidden" />
+                    <Setter TargetName="FajllIcon" Property="Visibility" Value="Visible" />
+                </DataTrigger>
+        	</DataTemplate.Triggers>
+        </DataTemplate>
     </controls:MetroWindow.Resources>
 
 	<Grid>
@@ -265,13 +301,13 @@
 			Margin="0,8,0,0"
 			HorizontalAlignment="Right"
 			Fill="{DynamicResource GrayBrush6}" />
-		<TabControl Grid.RowSpan="4"
+		<TabControl x:Name="TabControl" Grid.RowSpan="4"
 			Grid.Column="1"
 			Margin="10,12,10,0"
-			controls:TabControlHelper.IsUnderlined="True">
+			controls:TabControlHelper.IsUnderlined="True" SelectedIndex="{Binding ListaSelektuar}">
 			<TabItem Header="Fajllat e mi" controls:ControlsHelper.HeaderFontSize="22">
 				<Grid>
-					<ListBox Margin="0,8,0,0"
+					<ListBox x:Name="FajllatMi" Margin="0,8,0,0"
 						HorizontalContentAlignment="Stretch"
 						ItemTemplate="{DynamicResource FajllItemTemplate}"
 						ItemsSource="{Binding Fajllat}"
@@ -280,7 +316,14 @@
 				</Grid>
 			</TabItem>
 			<TabItem Header="Rezultatet e kërkimit" controls:ControlsHelper.HeaderFontSize="22">
-				<Grid />
+				<Grid >
+					<ListBox x:Name="FajllatRezultatet" Margin="0,8,0,0"
+						HorizontalContentAlignment="Stretch"
+						ItemTemplate="{DynamicResource FajllItemTemplate}"
+						ItemsSource="{Binding RezultatiSelektuar.Fajllat}"
+						ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+						SelectedItem="{Binding FajllInfoSelektuar}" />
+				</Grid>
 			</TabItem>
 		</TabControl>
 		<TextBlock Grid.Column="2"
@@ -409,9 +452,9 @@
 			FontSize="18.667"
 			Foreground="{DynamicResource AccentColorBrush}"
 			Text="Kërko shfrytëzues ose fajlla" />
-		<ListBox Grid.Row="1"
+		<ListBox x:Name="RezultatetKerkimit" Grid.Row="1"
 			Grid.RowSpan="3"
-			Margin="16,92,16,0" />
+			Margin="16,92,16,0" ItemTemplate="{DynamicResource SearchItemTemplate}" ItemsSource="{Binding RezultatetKerkimit}" SelectedItem="{Binding RezultatiSelektuar}" SelectionChanged="RezultatetKerkimit_SelectionChanged" />
 		<WrapPanel Grid.Row="1"
 			Grid.Column="2"
 			Margin="8,17,8,8"

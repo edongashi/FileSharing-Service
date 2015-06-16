@@ -46,6 +46,8 @@
     <Compile Include="Modeli\Dukshmeria.cs" />
     <Compile Include="Modeli\FajllInfo.cs" />
     <Compile Include="Modeli\KahuTransferit.cs" />
+    <Compile Include="Modeli\RezultatKerkimi.cs" />
+    <Compile Include="Modeli\LlojiRezultatit.cs" />
     <Compile Include="XmlSerializuesi.cs" />
     <Compile Include="Modeli\Shfrytezues.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

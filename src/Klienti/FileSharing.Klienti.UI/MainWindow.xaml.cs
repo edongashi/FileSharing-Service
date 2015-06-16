@@ -24,5 +24,16 @@ namespace FileSharing.Klienti.UI
             Closing += (s, e) => viewModel.Dispose();
             Loaded += async (s, e) => await viewModel.StartoAsync("Identifikohuni në server");
         }
+
+        private void RezultatetKerkimit_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+        	TabControl.SelectedIndex = 1;
+        }
+
+        private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+			//FajllatMi.UnselectAll();
+			//FajllatRezultatet.UnselectAll();
+        }
     }
 }

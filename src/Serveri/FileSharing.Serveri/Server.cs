@@ -288,6 +288,7 @@ namespace FileSharing.Serveri
 
                         case Header.Search:
                             {
+                                
                                 // TODO: Search
                                 break;
                             }
