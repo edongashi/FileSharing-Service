@@ -11,16 +11,20 @@ namespace FileSharing.Klienti.UI
     {
         public string MerrOpenPath()
         {
-            var openFileDialog = new OpenFileDialog();
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = "All Files|*.*"
+            };
 
             return openFileDialog.ShowDialog() == true ? openFileDialog.FileName : null;
         }
 
         public string MerrSavePath(string emri)
         {
-            var saveFileDialog = new SaveFileDialog()
+            var saveFileDialog = new SaveFileDialog
             {
-                FileName = emri
+                FileName = emri,
+                Filter = "All Files|*.*"
             };
 
             return saveFileDialog.ShowDialog() == true ? saveFileDialog.FileName : null;

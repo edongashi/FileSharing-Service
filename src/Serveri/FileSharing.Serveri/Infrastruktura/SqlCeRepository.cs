@@ -38,7 +38,7 @@ namespace FileSharing.Serveri.Infrastruktura
 
         public bool KrijoUser(string useri, string passwordi)
         {
-            if (string.IsNullOrEmpty(passwordi))
+            if (string.IsNullOrEmpty(useri) || string.IsNullOrEmpty(passwordi))
             {
                 return false;
             }
@@ -166,7 +166,54 @@ namespace FileSharing.Serveri.Infrastruktura
         {
             using (var db = new DataContext(connection))
             {
-                return db.Fajllat.Where(fajlli => fajlli.Pronari == useri && fajlli.Dukshmeria == Dukshmeria.Publike).ToArray();
+                return
+                    db.Fajllat.Where(fajlli => fajlli.Pronari == useri && fajlli.Dukshmeria == Dukshmeria.Publike)
+                        .ToArray();
+            }
+        }
+
+        public RezultatKerkimi[] Kerko(string pronari, string termi)
+        {
+            using (var db = new DataContext(connection))
+            {
+                var fajllatRezultati = (
+                    from fajll in db.Fajllat
+                    where (fajll.Pronari == pronari
+                           || fajll.Dukshmeria == Dukshmeria.Publike)
+                          && fajll.Emri.StartsWith(termi)
+                    select fajll
+                    ).ToArray();
+
+                var shfrytezuesit =
+                    from user in db.Shfrytezuesit
+                    where user.Emri.StartsWith(termi) && user.Emri != pronari
+                    join fajll in db.Fajllat.Where(f => f.Dukshmeria == Dukshmeria.Publike)
+                        on user.Emri equals fajll.Pronari into fajllat
+                    select new { user.Emri, Fajllat = fajllat };
+
+                var shfrytezuesitRezultati = shfrytezuesit.ToArray().Select(val =>
+                    new RezultatKerkimi
+                    {
+                        Emri = val.Emri,
+                        Fajllat = val.Fajllat.ToArray(),
+                        LlojiRezultatit = LlojiRezultatit.Shfrytezues
+                    });
+
+                if (fajllatRezultati.Length > 0)
+                {
+                    var teksti = fajllatRezultati.Length > 1 ? " Fajlla" : " Fajll";
+                    return new[]
+                    {
+                        new RezultatKerkimi
+                        {
+                            Emri = fajllatRezultati.Length + teksti,
+                            LlojiRezultatit = LlojiRezultatit.Fajll,
+                            Fajllat = fajllatRezultati
+                        }
+                    }.Concat(shfrytezuesitRezultati).ToArray();
+                }
+
+                return shfrytezuesitRezultati.ToArray();
             }
         }
 

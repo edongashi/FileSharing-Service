@@ -41,6 +41,12 @@ namespace FileSharing.Klienti.Sherbimet
                     return new Klient(shfrytezuesi.Emri, pergjigja.Teksti, AddressMarresi.ServerAdresa.ToString(),
                         new TcpServerKomunikues(klienti, tcpStream, AddressMarresi, CoreSherbimet), CoreSherbimet);
                 }
+                else if (pergjigja.Header == Header.UserLoguarGabim)
+                {
+                    tcpStream.Close();
+                    klienti.Close();
+                    throw new UserLoguarException();
+                }
                 else
                 {
                     tcpStream.Close();

@@ -12,7 +12,7 @@ namespace FileSharing.Serveri.Service
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[] 
             { 
-                new Service1() 
+                new FileSharingSherbimi() 
             };
             ServiceBase.Run(ServicesToRun);
         }

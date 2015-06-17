@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using FileSharing.Core.Modeli;
 using MahApps.Metro.Controls;
 
@@ -23,7 +24,9 @@ namespace FileSharing.Klienti.UI
         {
             UsernameWatermark = "Shfrytëzuesi",
             PasswordWatermark = "Fjalëkalimi",
-            AnimateHide = false
+            AnimateHide = false,
+            FirstAuxiliaryButtonText = "Krijo",
+            NegativeButtonVisibility = Visibility.Visible
         };
 
         public WindowDialogShfaqes(MetroWindow window)
@@ -33,12 +36,8 @@ namespace FileSharing.Klienti.UI
 
         public async Task<Shfrytezues> KerkoLoginAsync(string mesazhi)
         {
-            LoginDialogData rezultati;
-            do
-            {
-                rezultati = await window.ShowLoginAsync("Identifikimi", mesazhi, loginDialogSettings);
-            } while (rezultati == null);
-            return new Shfrytezues(rezultati.Username, rezultati.Password);
+            var rezultati = await window.ShowLoginAsync("Identifikimi", mesazhi, loginDialogSettings);
+            return rezultati == null ? null : new Shfrytezues(rezultati.Username, rezultati.Password);
         }
 
         public Task<ProgressDialogController> ShfaqProgresAsync(string titulli, string mesazhi)

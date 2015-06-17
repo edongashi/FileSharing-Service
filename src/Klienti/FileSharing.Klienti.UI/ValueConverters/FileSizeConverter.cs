@@ -11,7 +11,7 @@ namespace FileSharing.Klienti.UI.ValueConverters
         private static string SizeSuffix(int value)
         {
             if (value < 0) { return "-" + SizeSuffix(-value); }
-            if (value == 0) { return "0.0 bytes"; }
+            if (value == 0) { return "0 bajta"; }
 
             var mag = (int)Math.Log(value, 1024);
             var adjustedSize = (decimal)value / (1L << (mag * 10));

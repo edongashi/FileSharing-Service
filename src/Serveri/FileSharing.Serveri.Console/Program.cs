@@ -16,7 +16,7 @@ namespace FileSharing.Serveri.Console
             var pathResolver = new StandardPaths();
             var repository = new SqlCeRepository(pathResolver.GetFileInRootPath("databaza.db"));
             var serverSherbimet = new DefaultServerServices(new DefaultCoreServices());
-            var serveri = new Server("Edon-PC", repository, pathResolver, serverSherbimet, 5);
+            var serveri = new Server("Edon-PC", "test", repository, pathResolver, serverSherbimet, 5);
             serveri.Starto();
             System.Console.ReadLine();
         }

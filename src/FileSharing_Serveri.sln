@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Serveri", "Serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Serveri.Service", "Serveri\FileSharing.Serveri.Service\FileSharing.Serveri.Service.csproj", "{BC9055EE-3380-4AD3-9429-06D8CB816706}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Serveri.Tests", "Tests\FileSharing.Serveri.Tests\FileSharing.Serveri.Tests.csproj", "{93A6D25A-A7D0-4EEC-8658-125052D20778}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Core", "Core\FileSharing.Core.csproj", "{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Serveri.Console", "Serveri\FileSharing.Serveri.Console\FileSharing.Serveri.Console.csproj", "{941F51DB-3BAD-47D5-90BE-A078B830E908}"
@@ -27,10 +25,6 @@ Global
 		{BC9055EE-3380-4AD3-9429-06D8CB816706}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC9055EE-3380-4AD3-9429-06D8CB816706}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC9055EE-3380-4AD3-9429-06D8CB816706}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93A6D25A-A7D0-4EEC-8658-125052D20778}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93A6D25A-A7D0-4EEC-8658-125052D20778}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93A6D25A-A7D0-4EEC-8658-125052D20778}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93A6D25A-A7D0-4EEC-8658-125052D20778}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9475A01-B218-4C6E-A3D0-0D8A91DFCF57}.Release|Any CPU.ActiveCfg = Release|Any CPU

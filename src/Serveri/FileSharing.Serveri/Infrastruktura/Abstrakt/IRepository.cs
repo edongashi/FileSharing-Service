@@ -25,5 +25,7 @@ namespace FileSharing.Serveri.Infrastruktura.Abstrakt
         FajllInfo[] MerrFajllatUserit(string useri);
 
         FajllInfo[] MerrFajllatPublikUserit(string useri);
+
+        RezultatKerkimi[] Kerko(string pronari, string termi);
     }
 }

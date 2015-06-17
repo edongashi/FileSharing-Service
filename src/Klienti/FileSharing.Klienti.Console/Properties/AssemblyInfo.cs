@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ServeriTests")]
+[assembly: AssemblyTitle("FileSharing.Klienti.Console")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("ServeriTests")]
+[assembly: AssemblyProduct("FileSharing.Klienti.Console")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a812ccf7-7c2b-474b-bc74-cebfb11c848f")]
+[assembly: Guid("95bfb359-5708-4915-b426-1a449d2d9b09")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -18,3 +18,6 @@ namespace FileSharing.Serveri.Infrastruktura
         }
     }
 }
+
+
+

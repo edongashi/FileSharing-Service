@@ -57,6 +57,7 @@
     <Compile Include="Infrastruktura\DataContextConfiguration.cs" />
     <Compile Include="DefaultServerServices.cs" />
     <Compile Include="Infrastruktura\SqlCeRepository.cs" />
+    <Compile Include="Infrastruktura\ServicePaths.cs" />
     <Compile Include="Modeli\TransferTikete.cs" />
     <Compile Include="Infrastruktura\Abstrakt\IPathResolver.cs" />
     <Compile Include="IServerServiceLocator.cs" />

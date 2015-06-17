@@ -15,3 +15,7 @@ namespace FileSharing.Serveri.Infrastruktura
         public DbSet<Shfrytezues> Shfrytezuesit { get; set; }
     }
 }
+
+
+
+

@@ -64,6 +64,32 @@ namespace FileSharing.Klienti
             }
         }
 
+        public async Task<string> MerrLink(FajllInfo fajlli)
+        {
+            try
+            {
+                var pergjigja = await serverKomunikuesi.KomunikoDyAnshemAsync(new Mesazh(Header.MerrLink, IntegerKonvertuesi.NeBajta(fajlli.Id)));
+                return pergjigja.Header == Header.Ok ? pergjigja.Teksti : null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<RezultatKerkimi[]> KerkoAsync(string termi)
+        {
+            try
+            {
+                var pergjigja = await serverKomunikuesi.KomunikoDyAnshemAsync(new Mesazh(Header.Search, termi));
+                return pergjigja.Header == Header.Ok ? XmlSerializuesi<RezultatKerkimi[]>.DeserializoBajt(pergjigja.TeDhenat) : new RezultatKerkimi[0];
+            }
+            catch
+            {
+                return new RezultatKerkimi[0];
+            }
+        }
+
         public async Task<bool> FshijFajllinAsync(FajllInfo fajlli)
         {
             try

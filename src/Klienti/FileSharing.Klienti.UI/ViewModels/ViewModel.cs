@@ -6,6 +6,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using FileSharing.Klienti.Sherbimet;
 using FileSharing.Klienti.Sherbimet.Abstrakt;
 using MahApps.Metro;
 using FileSharing.Core.Modeli;
@@ -33,6 +35,7 @@ namespace FileSharing.Klienti.UI.ViewModels
         private bool kaPronesiMbiFajllin;
 
         private int listaSelektuar;
+        private string termiKerkimit;
 
         public ViewModel(Action<Action> uiInvoker, IDialogShfaqes dialogShfaqesi, IFileDialogShfaqes fileDialogShfaqesi, IKlientServiceLocator klientSherbimet)
         {
@@ -40,6 +43,21 @@ namespace FileSharing.Klienti.UI.ViewModels
             this.dialogShfaqesi = dialogShfaqesi;
             this.fileDialogShfaqesi = fileDialogShfaqesi;
             konektuesi = klientSherbimet.MerrServerKonektues();
+
+            KerkoCommand = new DelegateCommand(async arg =>
+            {
+                var termi = termiKerkimit.Trim();
+                if (termi.Length == 0)
+                {
+                    RezultatetKerkimit.Clear();
+                }
+                else
+                {
+                    RezultatetKerkimit =
+                        new ObservableCollection<RezultatKerkimi>(await klienti.KerkoAsync(termiKerkimit));
+                }
+            });
+
             ShtoFajllCommand = new DelegateCommand(arg =>
             {
                 var path = fileDialogShfaqesi.MerrOpenPath();
@@ -59,10 +77,20 @@ namespace FileSharing.Klienti.UI.ViewModels
                 }
             }, arg => fajllInfoSelektuar != null);
 
-            MerrLinkCommand = new DelegateCommand(arg =>
+            MerrLinkCommand = new DelegateCommand(async arg =>
             {
-
-            }, arg => fajllInfoSelektuar != null /* TODO */);
+                var fajlli = fajllInfoSelektuar;
+                var rezultati = await klienti.MerrLink(fajlli);
+                if (rezultati != null)
+                {
+                    Clipboard.SetText(rezultati);
+                    await dialogShfaqesi.ShfaqMesazhAsync("Sukses", "Linku u kopjua ne clipboard.");
+                }
+                else
+                {
+                    await dialogShfaqesi.ShfaqMesazhAsync("Gabim", "Nuk u realizua kerkesa.");
+                }
+            }, arg => fajllInfoSelektuar != null);
 
             FshijFajllCommand = new DelegateCommand(async arg =>
             {
@@ -111,27 +139,9 @@ namespace FileSharing.Klienti.UI.ViewModels
             }, arg => kaPronesiMbiFajllin);
 
             PastroTransferetCommand = new DelegateCommand(arg => klienti.PastroTransferet());
-
-            var rezultatetTest = new RezultatKerkimi[]
-            {
-                new RezultatKerkimi
-                {
-                    Emri = "15 Fajlla", LlojiRezultatit = LlojiRezultatit.Fajll,
-                    Fajllat = new[] { new FajllInfo { Emri = "Fajlli 1 deri 15" }}
-                },
-                new RezultatKerkimi { Emri = "Edon", LlojiRezultatit = LlojiRezultatit.Shfrytezues,
-                    Fajllat = new[] { new FajllInfo { Emri = "Fajllat Edon" }}
-                },
-                new RezultatKerkimi { Emri = "Ditjon", LlojiRezultatit = LlojiRezultatit.Shfrytezues,   
-                    Fajllat = new[] { new FajllInfo { Emri = "Fajllat Ditjon" }}
-                },
-                new RezultatKerkimi { Emri = "Mimoza", LlojiRezultatit = LlojiRezultatit.Shfrytezues,   
-                    Fajllat = new[] { new FajllInfo { Emri = "Fajllat Mimoza" }}
-                },
-            };
-
-            rezultatetKerkimit = new ObservableCollection<RezultatKerkimi>(rezultatetTest);
         }
+
+        public DelegateCommand KerkoCommand { get; private set; }
 
         public DelegateCommand ShtoFajllCommand { get; private set; }
 
@@ -146,6 +156,16 @@ namespace FileSharing.Klienti.UI.ViewModels
         public DelegateCommand BejePrivatCommand { get; private set; }
 
         public DelegateCommand PastroTransferetCommand { get; private set; }
+
+        public string TermiKerkimit
+        {
+            get { return termiKerkimit; }
+            set
+            {
+                termiKerkimit = value;
+                OnPropertyChanged("TermiKerkimit");
+            }
+        }
 
         public ObservableCollection<RezultatKerkimi> RezultatetKerkimit
         {
@@ -193,8 +213,8 @@ namespace FileSharing.Klienti.UI.ViewModels
         {
             get
             {
-                return fajllInfoSelektuar == null || (kaPronesiMbiFajllin &&
-                    fajllInfoSelektuar.Dukshmeria == Dukshmeria.Private);
+                return listaSelektuar == 0 && (fajllInfoSelektuar == null || (kaPronesiMbiFajllin &&
+                    fajllInfoSelektuar.Dukshmeria == Dukshmeria.Private));
             }
         }
 
@@ -202,9 +222,14 @@ namespace FileSharing.Klienti.UI.ViewModels
         {
             get
             {
-                return kaPronesiMbiFajllin &&
+                return listaSelektuar == 0 && kaPronesiMbiFajllin &&
                     fajllInfoSelektuar.Dukshmeria == Dukshmeria.Publike;
             }
+        }
+
+        public bool FshijDukshmeria
+        {
+            get { return listaSelektuar == 0 && (fajllInfoSelektuar == null || kaPronesiMbiFajllin); }
         }
 
         public bool KaPronesiMbiFajllin
@@ -244,7 +269,7 @@ namespace FileSharing.Klienti.UI.ViewModels
                 var shfrytezuesi = await dialogShfaqesi.KerkoLoginAsync(mesazhi);
                 if (shfrytezuesi == null)
                 {
-                    continue;
+                    Application.Current.Shutdown();
                 }
 
                 var progresKontrolleri = await dialogShfaqesi.ShfaqProgresAsync("Duke inicializuar", "");
@@ -262,6 +287,11 @@ namespace FileSharing.Klienti.UI.ViewModels
                         Fajllat = new ObservableCollection<FajllInfo>(await Klienti.MerrFajllatAsync());
                         konektuar = true;
                     }
+                }
+                catch (UserLoguarException)
+                {
+                    mesazhi = "Shfrytezuesi eshte i loguar nga nje klient tjeter";
+                    konektuar = false;
                 }
                 catch
                 {
@@ -286,6 +316,7 @@ namespace FileSharing.Klienti.UI.ViewModels
             OnPropertyChanged("KaPronesiMbiFajllin");
             OnPropertyChanged("BejPublikDukshmeria");
             OnPropertyChanged("BejPrivatDukshmeria");
+            OnPropertyChanged("FshijDukshmeria");
             MerrLinkCommand.RaiseCanExecuteChanged();
             ShkarkoFajllCommand.RaiseCanExecuteChanged();
             BejePublikCommand.RaiseCanExecuteChanged();

@@ -219,6 +219,9 @@
     </controls:MetroWindow.Resources>
 
 	<Grid>
+		  <Grid.Resources>
+       <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+        </Grid.Resources>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="175" />
 			<RowDefinition Height="Auto" />
@@ -425,7 +428,7 @@
 			VerticalAlignment="Top"
 			controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonCmd, Mode=OneWay}"
 			controls:TextBoxHelper.ClearTextButton="True"
-			controls:TextBoxHelper.Watermark="Termi...">
+			controls:TextBoxHelper.Watermark="Termi..." Text="{Binding TermiKerkimit}">
 			<TextBox.Style>
 				<Style BasedOn="{StaticResource SearchMetroTextBox}" TargetType="{x:Type TextBox}">
 					<Style.Triggers>
@@ -442,7 +445,7 @@
 			Margin="0,54,16,0"
 			HorizontalAlignment="Right"
 			VerticalAlignment="Top"
-			Content="Shko" />
+			Content="Shko" Command="{Binding KerkoCommand}" />
 		<TextBlock Grid.Row="1"
 			Width="222.28"
 			Height="24.83"
@@ -550,7 +553,7 @@
 				Margin="8"
 				ClickMode="{Binding FshijFajllCommand}"
 				Command="{Binding FshijFajllCommand}"
-				Style="{DynamicResource SquareButtonStyle}">
+				Style="{DynamicResource SquareButtonStyle}" Visibility="{Binding FshijDukshmeria, Converter={StaticResource BoolToVisibilityConverter}}">
 				<StackPanel Orientation="Horizontal">
 					<Rectangle Width="18"
 						Height="18"

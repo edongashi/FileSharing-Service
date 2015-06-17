@@ -6,7 +6,7 @@
 
         public const int TiketGjatesia = sizeof(int);
 
-        public const int PaketMadhesia = 64 * 1024; // 64KB paketa
+        public const int PaketMadhesia = 4 * 1024; // 4KB paketa
 
         public const string HashAlgoritmi = "MD5";
 

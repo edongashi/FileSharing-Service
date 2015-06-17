@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +26,10 @@ namespace FileSharing.Serveri
         private readonly Random random;
         private bool startuar;
 
-        public Server(string emri, IRepository repository, IPathResolver pathat, IServerServiceLocator serviceLocator,
+        private readonly byte[] iv;
+        private readonly byte[] key;
+
+        public Server(string emri, string password, IRepository repository, IPathResolver pathat, IServerServiceLocator serviceLocator,
             int maxTransfere)
         {
             serverEmri = emri;
@@ -37,6 +41,11 @@ namespace FileSharing.Serveri
             TransferPranuesi = serviceLocator.MerrFilePranues();
             KlientetLoguar = new Dictionary<string, IKlientKomunikues>(StringComparer.OrdinalIgnoreCase);
             Transferet = new Dictionary<int, TransferTikete>();
+            using (var keyGen = new Rfc2898DeriveBytes(password, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }))
+            {
+                iv = keyGen.GetBytes(16);
+                key = keyGen.GetBytes(16);
+            }
         }
 
         #region Gjendja
@@ -102,6 +111,27 @@ namespace FileSharing.Serveri
             try
             {
                 var identifikimi = await klienti.PranoAsync();
+
+                if (identifikimi.Header == Header.KrijoUser)
+                {
+                    shfrytezuesi = await ProvoParse<Shfrytezues>(klienti, identifikimi.TeDhenat);
+                    if (shfrytezuesi != null)
+                    {
+                        var krijuar = Repository.KrijoUser(shfrytezuesi.Emri, shfrytezuesi.Fjalekalimi);
+                        if (krijuar)
+                        {
+                            await klienti.DergoAsync(new Mesazh(Header.Ok));
+                        }
+                        else
+                        {
+                            await klienti.DergoAsync(new Mesazh(Header.Gabim));
+                        }
+                    }
+
+                    klienti.Dispose();
+                    return;
+                }
+
                 if (identifikimi.Header != Header.Identifikim)
                 {
                     await klienti.DergoAsync(new Mesazh(Header.IdentifikimGabim));
@@ -115,6 +145,13 @@ namespace FileSharing.Serveri
                     var loginOk = Repository.TestoLogin(shfrytezuesi.Emri, shfrytezuesi.Fjalekalimi);
                     if (loginOk)
                     {
+                        if (KlientetLoguar.ContainsKey(shfrytezuesi.Emri))
+                        {
+                            await klienti.DergoAsync(new Mesazh(Header.UserLoguarGabim, serverEmri));
+                            klienti.Dispose();
+                            return;
+                        }
+
                         await klienti.DergoAsync(new Mesazh(Header.Ok, serverEmri));
                         KlientetLoguar[shfrytezuesi.Emri] = klienti;
                     }
@@ -137,6 +174,7 @@ namespace FileSharing.Serveri
                 return;
             }
 
+            var lejetEkstra = new HashSet<int>();
             while (startuar)
             {
                 try
@@ -175,7 +213,7 @@ namespace FileSharing.Serveri
                                     {
                                         await klienti.DergoAsync(new Mesazh(Header.FileNotFound));
                                     }
-                                    else if (fajlli.Dukshmeria == Dukshmeria.Private && !String.Equals(fajlli.Pronari, shfrytezuesi.Emri, StringComparison.OrdinalIgnoreCase))
+                                    else if (fajlli.Dukshmeria == Dukshmeria.Private && !String.Equals(fajlli.Pronari, shfrytezuesi.Emri, StringComparison.OrdinalIgnoreCase) && !lejetEkstra.Contains(idFile))
                                     {
                                         await klienti.DergoAsync(new Mesazh(Header.PermissionGabim));
                                     }
@@ -266,7 +304,22 @@ namespace FileSharing.Serveri
                                         var filePath = PathResolver.GetFileInDataPath(fajllInfo.Id.ToString());
                                         if (File.Exists(filePath))
                                         {
-                                            File.Delete(filePath);
+                                            bool fshire;
+                                            try
+                                            {
+                                                File.Delete(filePath);
+                                                fshire = true;
+                                            }
+                                            catch
+                                            {
+                                                fshire = false;
+                                            }
+
+                                            if (!fshire)
+                                            {
+                                                await klienti.DergoAsync(new Mesazh(Header.Gabim));
+                                                break;
+                                            }
                                         }
 
                                         if (Repository.DeleteFajll(fajllInfo))
@@ -288,8 +341,74 @@ namespace FileSharing.Serveri
 
                         case Header.Search:
                             {
-                                
-                                // TODO: Search
+                                var termi = kerkesa.Teksti.Trim();
+                                if (termi.Length == 0)
+                                {
+                                    await klienti.DergoAsync(new Mesazh(Header.Gabim));
+                                    break;
+                                }
+
+                                if (termi.Length == 32)
+                                {
+                                    try
+                                    {
+                                        var termiBajtat = StringToByteArray(termi);
+                                        using (var aes = new AesManaged { Padding = PaddingMode.None })
+                                        using (var decryptor = aes.CreateDecryptor(key, iv))
+                                        using (var memoryStream = new MemoryStream(termiBajtat))
+                                        using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
+                                        {
+                                            var buffer = new byte[4];
+                                            cryptoStream.Read(buffer, 0, 4);
+                                            var id = BitConverter.ToInt32(buffer, 0);
+                                            var fajlli = Repository.MerrFajllInfo(id);
+                                            if (fajlli != null)
+                                            {
+                                                var emriBuffer = new byte[12];
+                                                cryptoStream.Read(emriBuffer, 0, 12);
+                                                var pronari = Encoding.UTF8.GetBytes(fajlli.Pronari);
+                                                var max = pronari.Length > 12 ? 12 : pronari.Length;
+                                                var baraz = true;
+                                                for (var i = 0; i < max; i++)
+                                                {
+                                                    if (emriBuffer[i] != pronari[i])
+                                                    {
+                                                        baraz = false;
+                                                        break;
+                                                    }
+                                                }
+
+                                                if (baraz)
+                                                {
+                                                    // Kodi valid, shto id dhe kthe fajll
+                                                    if (!String.Equals(fajlli.Pronari, shfrytezuesi.Emri, StringComparison.OrdinalIgnoreCase))
+                                                    {
+                                                        lejetEkstra.Add(id);
+                                                    }
+
+                                                    var rezultati = new[]
+                                                    {
+                                                        new RezultatKerkimi
+                                                        {
+                                                            Emri = "1 Fajll",
+                                                            Fajllat = new FajllInfo[] { fajlli },
+                                                            LlojiRezultatit = LlojiRezultatit.Fajll
+                                                        }
+                                                    };
+
+                                                    await klienti.DergoAsync(new Mesazh(Header.Ok,
+                                                            XmlSerializuesi<RezultatKerkimi[]>.SerializoBajt(rezultati)));
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    catch { }
+                                }
+
+                                var rezultatet = Repository.Kerko(shfrytezuesi.Emri, termi);
+                                await klienti.DergoAsync(new Mesazh(Header.Ok,
+                                    XmlSerializuesi<RezultatKerkimi[]>.SerializoBajt(rezultatet)));
                                 break;
                             }
 
@@ -324,6 +443,62 @@ namespace FileSharing.Serveri
                                         {
                                             await klienti.DergoAsync(new Mesazh(Header.Gabim));
                                         }
+                                    }
+                                }
+                                else
+                                {
+                                    await klienti.DergoAsync(new Mesazh(Header.ParseGabim));
+                                }
+
+                                break;
+                            }
+
+                        case Header.MerrLink:
+                            {
+                                int idFile;
+                                if (IntegerKonvertuesi.ProvoNgaBajtat(kerkesa.TeDhenat, out idFile))
+                                {
+                                    var fajllInfo = Repository.MerrFajllInfo(idFile);
+                                    if (fajllInfo == null)
+                                    {
+                                        await klienti.DergoAsync(new Mesazh(Header.FileNotFound));
+                                    }
+                                    else if (fajllInfo.Dukshmeria == Dukshmeria.Private && !String.Equals(fajllInfo.Pronari, shfrytezuesi.Emri, StringComparison.OrdinalIgnoreCase) && !lejetEkstra.Contains(idFile))
+                                    {
+                                        await klienti.DergoAsync(new Mesazh(Header.PermissionGabim));
+                                    }
+                                    else
+                                    {
+                                        Mesazh pergjigja;
+                                        try
+                                        {
+                                            using (var aes = new AesManaged { Padding = PaddingMode.None })
+                                            using (var encryptor = aes.CreateEncryptor(key, iv))
+                                            using (var memoryStream = new MemoryStream())
+                                            {
+                                                using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+                                                {
+                                                    var buffer = new byte[16];
+                                                    var emriBytes = Encoding.UTF8.GetBytes(fajllInfo.Pronari);
+                                                    if (emriBytes.Length < 12)
+                                                    {
+                                                        Array.Resize(ref emriBytes, 12);
+                                                    }
+
+                                                    Buffer.BlockCopy(kerkesa.TeDhenat, 0, buffer, 0, 4);
+                                                    Buffer.BlockCopy(emriBytes, 0, buffer, 4, 12);
+                                                    cryptoStream.Write(buffer, 0, 16);
+                                                }
+
+                                                pergjigja = new Mesazh(Header.Ok, BitConverter.ToString(memoryStream.ToArray()).Replace("-", ""));
+                                            }
+                                        }
+                                        catch
+                                        {
+                                            pergjigja = new Mesazh(Header.Gabim);
+                                        }
+
+                                        await klienti.DergoAsync(pergjigja);
                                     }
                                 }
                                 else
@@ -417,7 +592,7 @@ namespace FileSharing.Serveri
                                 File.Delete(tempFile);
                                 throw;
                             }
-                            
+
                             fajlli.Madhesia = (int)fileStream.Length;
                             fileStream.Close();
 
@@ -484,6 +659,27 @@ namespace FileSharing.Serveri
                     });
                 }
             }
+        }
+
+        public static byte[] StringToByteArray(string hex)
+        {
+            if (hex.Length % 2 == 1)
+                throw new Exception("The binary key cannot have an odd number of digits");
+
+            var arr = new byte[hex.Length >> 1];
+
+            for (var i = 0; i < hex.Length >> 1; ++i)
+            {
+                arr[i] = (byte)((GetHexVal(hex[i << 1]) << 4) + (GetHexVal(hex[(i << 1) + 1])));
+            }
+
+            return arr;
+        }
+
+        private static int GetHexVal(char hex)
+        {
+            var val = (int)hex;
+            return val - (val < 58 ? 48 : (val < 97 ? 55 : 87));
         }
     }
 }
