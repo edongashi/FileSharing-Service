@@ -27,13 +27,12 @@ namespace FileSharing.Klienti.UI
 
         private void RezultatetKerkimit_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-        	TabControl.SelectedIndex = 1;
+            TabControl.SelectedIndex = 1;
         }
 
-        private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private async void Nderro_LeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-			//FajllatMi.UnselectAll();
-			//FajllatRezultatet.UnselectAll();
+            await viewModel.RestartoAsync("Identifikohuni në server");
         }
     }
 }

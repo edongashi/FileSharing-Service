@@ -285,12 +285,7 @@
 			<TextBlock Cursor="Hand"
 				FontSize="14.667"
 				Foreground="{DynamicResource HighlightBrush}"
-				Text="Menaxho" />
-			<TextBlock FontSize="14.667" Text=" | " />
-			<TextBlock Cursor="Hand"
-				FontSize="14.667"
-				Foreground="{DynamicResource HighlightBrush}"
-				Text="Ndërro" />
+				Text="Ndërro" MouseLeftButtonDown="Nderro_LeftButtonDown" />
 		</StackPanel>
 		<Rectangle Grid.RowSpan="4"
 			Grid.Column="1"

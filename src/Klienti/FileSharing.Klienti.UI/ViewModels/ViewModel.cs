@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using FileSharing.Klienti.Sherbimet;
 using FileSharing.Klienti.Sherbimet.Abstrakt;
-using MahApps.Metro;
 using FileSharing.Core.Modeli;
-using System.Windows.Input;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
 
 namespace FileSharing.Klienti.UI.ViewModels
 {
@@ -260,6 +252,12 @@ namespace FileSharing.Klienti.UI.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public Task RestartoAsync(string mesazhiInicial)
+        {
+            klienti.Dispose();
+            return StartoAsync(mesazhiInicial);
+        }
+
         public async Task StartoAsync(string mesazhiInicial)
         {
             var konektuar = false;
@@ -273,6 +271,12 @@ namespace FileSharing.Klienti.UI.ViewModels
                 }
 
                 var progresKontrolleri = await dialogShfaqesi.ShfaqProgresAsync("Duke inicializuar", "");
+
+                ListaSelektuar = 0;
+                RezultatetKerkimit = null;
+                TermiKerkimit = null;
+                Fajllat = null;
+
                 try
                 {
                     var rezultati = await konektuesi.KonektohuAsync(shfrytezuesi);
