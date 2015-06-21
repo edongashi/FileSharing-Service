@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ServerInfo>
+    <Adresa>127.0.0.1</Adresa>
+    <PortiKomunikimit>7000</PortiKomunikimit>
+    <PortiTransferit>7001</PortiTransferit>
+</ServerInfo>
